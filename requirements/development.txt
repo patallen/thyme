@@ -1,0 +1,4 @@
+-r production.txt
+pytest==3.0.6
+tox==2.6.0
+flake8==3.3.0
