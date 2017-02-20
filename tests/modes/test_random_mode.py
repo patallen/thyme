@@ -1,5 +1,3 @@
-import pytest
-
 from thyme.modes import RandomMode
 from thyme.results import ValidResult, InvalidResult
 
