@@ -1,51 +1,48 @@
 import pytest
-
-from thyme.utils import convert_fmt, _find_delimiter, _find_parts
-
-good_no_delim_formats = ['yyyymmdd', 'mmddyyyy']
-acceptable_no_delim_formats = ['yyymmmdd', 'mmmddyyy']
-should_raise_no_delim_formats = ['ymd', 'yearmonthday']
+from datetime import datetime
 
 
-def test_find_good_no_delim_parts():
-    parts = _find_parts(good_no_delim_formats[0])
+from thyme.utils import string_to_datetime, make_timestamp
 
-    assert parts == ['yyyy', 'mm', 'dd']
+good_dates = [
+    'February 25 1990',
+    '02/25/1990',
+    '02-25-1990',
+    'Feb 25 1990',
+    'Feb 25, 1990',
+    '2/25/90',
+    '2-25-90',
+    '02251990',
+]
 
-    parts = _find_parts(good_no_delim_formats[1])
-
-    assert parts == ['mm', 'dd', 'yyyy']
-
-
-def test_find_acceptable_no_delim_parts():
-    parts = _find_parts(acceptable_no_delim_formats[0])
-
-    assert parts == ['yy', 'mm', 'dd']
-
-    parts = _find_parts(acceptable_no_delim_formats[1])
-
-    assert parts == ['mm', 'dd', 'yy']
-
-
-def test_should_raise_error():
-    with pytest.raises(ValueError):
-        _find_parts(should_raise_no_delim_formats[0])
-
-    with pytest.raises(ValueError):
-        _find_parts(should_raise_no_delim_formats[1])
+bad_dates = [
+    'zz3234z',
+    'feb 25 190'
+]
 
 
-def test_convert_fmt():
-    fmt = 'yyyy-mm-dd'
-    assert convert_fmt(fmt) == '%Y-%m-%d'
+def test_string_to_datetime():
+    final = datetime(1990, 2, 25)
 
-    fmt = 'mm-yy-dd'
-    assert convert_fmt(fmt) == '%m-%y-%d'
-
-    fmt = 'dd/mm/yyyy'
-    assert convert_fmt(fmt) == '%d/%m/%Y'
+    for good_date in good_dates:
+        assert string_to_datetime(good_date) == final
 
 
-def test_convert_fmt_no_delim():
-    fmt = 'yyyymmdd'
-    assert convert_fmt(fmt) == '%Y%m%d'
+def test_bad_date_string():
+    for bad_date in bad_dates:
+        with pytest.raises(ValueError):
+            string_to_datetime(bad_date)
+
+
+def test_good_make_timestamp():
+    date = datetime(1990, 2, 25)
+    ts = 635904000
+
+    assert make_timestamp(date) == ts
+
+
+def test_bad_make_timestamp():
+    date = 'not a datetime'
+
+    with pytest.raises(TypeError):
+        make_timestamp(date)

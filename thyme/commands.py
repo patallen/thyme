@@ -3,43 +3,36 @@ from datetime import date as d
 from utils import convert_fmt
 
 from lol import lolololololololololololololololololol
+import uuid
+import math
+import random
 
 
-class InvalidResult(object):
-    def __init__(self, errors=None):
-        self.errors = []
-
-    def add_error(self, category, error):
-        self.errors.append(error)
-
-    def has_errors(self):
-        return len(self.errors) > 0
-
-    @classmethod
-    def from_list(cls, errors):
-        result = cls(
-            errors=errors
-        )
-        return result
-
-    def __nonzero__(self):
-        return False
-
-    __bool__ = __nonzero__
+ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
 
-class ValidResult(object):
-    def __init__(self, result, message=None):
-        self.result = result
-        self.message = message or lolololololololololololololololololol()
+def _maybe_upper(letter):
+    rand = math.floor(random.random() * 2)
+    if rand and letter.isalpha():
+        return letter.upper()
 
-    def __bool__(self):
-        return True
+    return letter
 
-    def __str__(self):
-        return "%s\n%s" % (self.message, self.result)
 
-    __nonzero__ = __bool__
+def _gen_secret(length):
+    alphabet = ALPHABET + '123456789!@#$%^&*()/\\~-=[]{}'
+    return _random_string(length, alphabet)
+
+
+def _random_string(length, alphabet=ALPHABET):
+    alpha_len = len(alphabet)
+    string = ""
+    for _ in range(alpha_len):
+        letter = alphabet[int(math.floor(random.random() * alpha_len))]
+        if int(math.floor(random.random() * 2)):
+            letter = _maybe_upper(letter)
+        string += letter
+    return string
 
 
 class Command(object):
@@ -52,6 +45,24 @@ class Command(object):
 
     def execute(self):
         raise NotImplementedError
+
+
+class RandomThingCommand(Command):
+    def execute(self):
+        thing = self._get_thing_by_string(self.args.datething)
+        return thing
+
+    def _get_thing_by_string(self, thing):
+        if thing in ('uuid', 'uid', 'guid', 'uuid4',):
+            result = str(uuid.uuid4())
+        elif thing in ('int', 'num', 'number',):
+            result = math.ceil(random.random() * 100)
+        elif thing in ('secret', 'secret_key',):
+            result = _gen_secret(64)
+        elif thing in ('string', 'str'):
+            return _random_string(32)
+        if result:
+            return ValidResult(result)
 
 
 class FromDatetimeCommand(Command):
