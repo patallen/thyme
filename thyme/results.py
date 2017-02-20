@@ -3,9 +3,11 @@ from lol import lolololololololololololololololololol
 
 class InvalidResult(object):
     def __init__(self, error=None, errors=None):
-        self.errors = errors or [error]
+        self.errors = errors or []
+        if error:
+            self.errors = [error]
 
-    def add_error(self, category, error):
+    def add_error(self, error):
         self.errors.append(error)
 
     def has_errors(self):
@@ -18,18 +20,13 @@ class InvalidResult(object):
         )
         return result
 
-    def serialize(self):
-        return {
-            'errors': [e['message'] for e in self.errors]
-        }
-
     def __nonzero__(self):
         return False
 
     def __str__(self):
-        woops = 'Whoops! We couldnt do that...\n'
+        woops = 'Whoops! We couldn\'t do that...\n'
 
-        msg = "%s%s" % (woops, "\n".join([n['error'] for n in self.errors]))
+        msg = "%s%s" % (woops, "\n".join([n for n in self.errors]))
         return msg
 
     __bool__ = __nonzero__
