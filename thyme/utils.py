@@ -73,7 +73,7 @@ def gen_random_thing(randthing, limit=None):
 
 def _random_secret(length=64):
     chars = string.printable
-    return "".join([chars[_random_int(len(chars))] for _ in range(length)])
+    return "".join([chars[_random_int(len(chars) - 1)] for _ in range(length)])
 
 
 def _random_int(upper_bound):

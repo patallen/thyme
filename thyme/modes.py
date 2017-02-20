@@ -1,12 +1,12 @@
 from datetime import datetime as dt
 
-from utils import (
+from .utils import (
     datetime_to_string,
     string_to_datetime,
     make_timestamp,
     gen_random_thing,
 )
-from results import ValidResult, InvalidResult
+from .results import ValidResult, InvalidResult
 
 
 class Mode(object):

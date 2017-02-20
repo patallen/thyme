@@ -26,7 +26,6 @@ def test_invalid_from_list():
 
 def test_invalid_result_has_errors():
     no_errors = InvalidResult()
-    print no_errors.errors
     assert not no_errors.has_errors()
 
     errors = InvalidResult.from_list(["dalfjdlsakfj"])

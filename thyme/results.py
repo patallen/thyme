@@ -1,4 +1,4 @@
-from lol import lolololololololololololololololololol
+from .lol import lolololololololololololololololololol
 
 
 class InvalidResult(object):

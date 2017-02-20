@@ -1,4 +1,4 @@
-from modes import DatetimeMode, TimestampMode, RandomMode
+from .modes import DatetimeMode, TimestampMode, RandomMode
 
 
 class Thyme(object):
@@ -18,9 +18,9 @@ class Thyme(object):
                 return self._modes[mode]
 
         # check if --version or --help here
-        print "Did not supply a valid mode. Use 'thyme -h' for help."
+        print("Did not supply a valid mode. Use 'thyme -h' for help.")
 
     def run(self):
         self.mode = self.mode_class(self._kwargs)
         res = self.mode.execute()
-        print res
+        print(res)

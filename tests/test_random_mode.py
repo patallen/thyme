@@ -42,7 +42,7 @@ def test_random_mode_secret():
     res = rm.execute()
 
     assert isinstance(res, ValidResult)
-    assert isinstance(res.result, (str, unicode))
+    assert isinstance(res.result, str)
     assert len(res.result) == 100
 
 
