@@ -9,23 +9,23 @@ class Mode(object):
         self._kwargs = kwargs
 
     def execute(self):
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
 
 class DatetimeMode(Mode):
     """Handles mode 'datetime'.
 
-
     Takes a required timestamp and optional format string.
     Returns the timestamp as a formatted date.
     """
+
     _default_format = 'MMM DD, YYYY'
 
     def execute(self):
         try:
             result = self._execute()
-        except Exception as e:
-            return InvalidResult(error={'category': 'invalid', 'error': e})
+        except Exception:
+            return InvalidResult('Could not process timestamp.')
 
         return ValidResult(result=result)
 
@@ -43,19 +43,13 @@ class DatetimeMode(Mode):
 
     def _get_timestamp(self, kwargs):
         try:
-            ts = float(kwargs.get('<timestamp>'))
-        except TypeError:
-            raise TypeError('Timestamp must be a float.')
-
-        if not ts:
-            raise TypeError('Timestamp cannot be None.')
-
-        return float(ts)
+            return float(kwargs.get('<timestamp>'))
+        except ValueError:
+            raise ValueError('Timestamp must convertable to a float.')
 
 
 class TimestampMode(Mode):
     """Handles mode 'datetime'.
-
 
     Takes a required datetime and optional format string.
     Returns the datetime as a UTC timestamp.
@@ -70,17 +64,8 @@ class TimestampMode(Mode):
         try:
             dt = string_to_datetime(datestring)
         except:
-            return InvalidResult(
-                {'category': 'invalid',
-                 'error': 'Could not handle date string.'}
-            )
+            return InvalidResult('Could not handle date string')
 
-        try:
-            timestamp = make_timestamp(dt)
-        except:
-            return InvalidResult(
-                {'category': 'other',
-                 'error': 'Could not make timestamp from datetime.'}
-            )
+        timestamp = make_timestamp(dt)
 
         return ValidResult(result=timestamp)

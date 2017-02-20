@@ -1,3 +1,5 @@
+import pytest
+
 from thyme.modes import DatetimeMode
 from thyme.results import ValidResult, InvalidResult
 
@@ -64,3 +66,8 @@ def test_datetime_mode_invalid_format():
     res = timestamp_mode.execute()
     assert isinstance(res, InvalidResult)
 
+
+def test_datetime_mode_invalid_input():
+    dtm = DatetimeMode({'<timestamp>': 'z'})
+    with pytest.raises(ValueError):
+        assert dtm._execute()
