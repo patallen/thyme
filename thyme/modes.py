@@ -1,5 +1,3 @@
-from datetime import datetime as dt
-
 from .utils import (
     datetime_to_string,
     string_to_datetime,
@@ -36,6 +34,7 @@ class DatetimeMode(Mode):
         return ValidResult(result=result)
 
     def _execute(self):
+        from datetime import datetime as dt
         timestamp = self._get_timestamp(self._kwargs)
         dateformat = self._get_format(self._kwargs)
         date = dt.utcfromtimestamp(timestamp)

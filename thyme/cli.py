@@ -21,9 +21,8 @@ Examples:
   thyme stamp 02-25-1990    =>  635922000
   thyme date 635922000      =>  02-25-1990
 """
-
 from docopt import docopt
-from thyme import Thyme
+from .thyme import Thyme
 
 
 def main():

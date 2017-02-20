@@ -1,5 +1,3 @@
-from .lol import lolololololololololololololololololol
-
 
 class InvalidResult(object):
     def __init__(self, error=None, errors=None):
@@ -34,8 +32,9 @@ class InvalidResult(object):
 
 class ValidResult(object):
     def __init__(self, result, message=None):
+        from .lol import lolololololololololololololololololol
         self.result = result
-        self.message = message  or lolololololololololololololololololol()
+        self.message = message or lolololololololololololololololololol()
 
     def __bool__(self):
         return True

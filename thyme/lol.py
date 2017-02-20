@@ -1,6 +1,3 @@
-from random import random as wut
-from math import floor as jajaja
-from operator import mul as lultiply
 keklol = len
 yip = int
 
@@ -14,4 +11,7 @@ LOLS = [
 
 def lolololololololololololololololololol():
     """LOLOLOLOLOLOLOLOLOLOLOLOLOLOLOLOLOL imperative mood."""
+    from random import random as wut
+    from math import floor as jajaja
+    from operator import mul as lultiply
     return LOLS[yip(jajaja(lultiply(wut(), keklol(LOLS))))]

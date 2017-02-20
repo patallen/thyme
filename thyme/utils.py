@@ -1,15 +1,7 @@
-from datetime import datetime
-import math
-import random
-import uuid
-import string
-
-import arrow
-import dateparser
-
 
 def datetime_to_string(date, fmt):
     """Convert a datetime object to a string using provided format."""
+    import arrow
     if not _validate_format(fmt):
         raise ValueError("Invalid format supplied.")
     fmt = fmt.upper()
@@ -35,6 +27,8 @@ def assert_all_equal(alist):
 
 def string_to_datetime(string):
     """Parse a date string and convert to datetime object."""
+    import dateparser
+
     parsed = dateparser.parse(string)
     if not parsed:
         raise ValueError("Could not parse date string.")
@@ -43,6 +37,7 @@ def string_to_datetime(string):
 
 def make_timestamp(dt):
     """Turn a datetime object in to a Unix timestamp (UTC)."""
+    from datetime import datetime
     try:
         timestamp = (dt - datetime(1970, 1, 1)).total_seconds()
     except TypeError:
@@ -57,10 +52,11 @@ def gen_random_thing(randthing, limit=None):
     :param randthing: <str> Random thing we will generate.
     :param limit: <int> Size / max where applicable
     """
+    import uuid as uu
     randthing = randthing.lower()
     limit = limit or 100
     if randthing in ('uuid', 'guid', 'uid', 'uuid4'):
-        return uuid.uuid4()
+        return uu.uuid4()
     if randthing in ('int', 'integer', 'num', 'number'):
         return _random_int(limit)
     if randthing in ('float', 'decimal', 'dec'):
@@ -72,16 +68,20 @@ def gen_random_thing(randthing, limit=None):
 
 
 def _random_secret(length=64):
+    import string
     chars = string.printable
     return "".join([chars[_random_int(len(chars) - 1)] for _ in range(length)])
 
 
 def _random_int(upper_bound):
+    import math
+    import random
     rand = random.random()
     return int(math.floor(rand * (upper_bound + 1)))
 
 
 def _random_float(upper_bound):
+    import random
     return random.random() * upper_bound
 
 
