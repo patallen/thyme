@@ -3,3 +3,6 @@ __pycache__
 *.sublime-project
 *.DS_Store
 *.coverage
+*.egg-info
+build
+dist
