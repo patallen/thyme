@@ -25,7 +25,8 @@ Examples:
 from docopt import docopt
 from thyme import Thyme
 
-if __name__ == '__main__':
+
+def main():
     arguments = docopt(__doc__)
     thyme = Thyme(arguments)
     thyme.run()
