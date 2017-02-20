@@ -1,7 +1,13 @@
 import pytest
 from datetime import datetime
 
-from thyme.utils import string_to_datetime, make_timestamp, datetime_to_string
+from thyme.utils import (
+    string_to_datetime,
+    make_timestamp,
+    datetime_to_string,
+    assert_all_equal,
+    _validate_format
+)
 
 good_dates = [
     'February 25 1990',
@@ -54,3 +60,23 @@ def test_datetime_to_string():
 
     string = datetime_to_string(dt, 'mmm dd, yyyy')
     assert string == 'Feb 25, 1990'
+
+
+def test_assert_all_equal():
+    good = ['a', 'a', 'a']
+    assert assert_all_equal(good)
+
+    bad = ['a', 'b', 'c']
+    assert not assert_all_equal(bad)
+
+    one = ['a']
+    assert assert_all_equal(one)
+
+
+def test_validate_format():
+    good = 'YYYY MMM DD'
+    bad = 'YZYY MMM D'
+
+    assert _validate_format(good)
+    assert not _validate_format(bad)
+
