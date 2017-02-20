@@ -30,3 +30,7 @@ def main():
     arguments = docopt(__doc__)
     thyme = Thyme(arguments)
     thyme.run()
+
+
+if __name__ == '__main__':
+    main()
