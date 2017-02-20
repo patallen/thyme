@@ -1,8 +1,7 @@
 import pytest
 from datetime import datetime
 
-
-from thyme.utils import string_to_datetime, make_timestamp
+from thyme.utils import string_to_datetime, make_timestamp, datetime_to_string
 
 good_dates = [
     'February 25 1990',
@@ -46,3 +45,12 @@ def test_bad_make_timestamp():
 
     with pytest.raises(TypeError):
         make_timestamp(date)
+
+
+def test_datetime_to_string():
+    dt = datetime(1990, 2, 25)
+    string = datetime_to_string(dt, 'MMM DD, YYYY')
+    assert string == 'Feb 25, 1990'
+
+    string = datetime_to_string(dt, 'mmm dd, yyyy')
+    assert string == 'Feb 25, 1990'

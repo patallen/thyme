@@ -1,5 +1,5 @@
-from datetime import date as d
-from utils import get_strftime_format, string_to_datetime, make_timestamp
+from datetime import date as d, datetime as dt
+from utils import datetime_to_string, string_to_datetime, make_timestamp
 from results import ValidResult, InvalidResult
 
 
@@ -19,28 +19,22 @@ class DatetimeMode(Mode):
     Takes a required timestamp and optional format string.
     Returns the timestamp as a formatted date.
     """
-    _default_format = 'mm/dd/yyyy'
+    _default_format = 'MMM DD, YYYY'
 
     def execute(self):
-        timestamp = self._get_timestamp(self._kwargs)
-        dateformat = self._get_format(self._kwargs)
-
-        return self._execute(timestamp, dateformat)
-
-    def _execute(self, timestamp, dateformat):
         try:
-            date = d.fromtimestamp(timestamp)
+            result = self._execute()
         except Exception as e:
             return InvalidResult(error={'category': 'invalid', 'error': e})
 
-        fmt = get_strftime_format(dateformat)
+        return ValidResult(result=result)
 
-        try:
-            formatted = date.strftime(fmt)
-        except Exception as e:
-            return InvalidResult({'category': 'formatting', 'error': e})
-
-        return ValidResult(result=formatted)
+    def _execute(self):
+        timestamp = self._get_timestamp(self._kwargs)
+        dateformat = self._get_format(self._kwargs)
+        date = dt.utcfromtimestamp(timestamp)
+        formatted = datetime_to_string(date, dateformat)
+        return formatted
 
     def _get_format(self, kwargs):
         f1 = kwargs.get('--format')
@@ -48,7 +42,11 @@ class DatetimeMode(Mode):
         return f1 or f2 or self._default_format
 
     def _get_timestamp(self, kwargs):
-        ts = float(kwargs.get('<timestamp>'))
+        try:
+            ts = float(kwargs.get('<timestamp>'))
+        except TypeError:
+            raise TypeError('Timestamp must be a float.')
+
         if not ts:
             raise TypeError('Timestamp cannot be None.')
 

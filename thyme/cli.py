@@ -3,7 +3,7 @@ thyme
 
 Usage:
   thyme random (<randthing>) [<limit>]
-  thyme stamp <datestring> [--format=<fmt>]
+  thyme stamp <datestring>
   thyme date <timestamp> [--format=<fmt>]
   thyme --version
   thyme -h | --help

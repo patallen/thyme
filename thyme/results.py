@@ -1,3 +1,6 @@
+from lol import lolololololololololololololololololol
+
+
 class InvalidResult(object):
     def __init__(self, error=None, errors=None):
         self.errors = errors or [error]
@@ -35,12 +38,12 @@ class InvalidResult(object):
 class ValidResult(object):
     def __init__(self, result, message=None):
         self.result = result
-        self.message = message  # or lolololololololololololololololololol()
+        self.message = message  or lolololololololololololololololololol()
 
     def __bool__(self):
         return True
 
     def __str__(self):
-        return "\n\n%s -- %s\n\n" % (self.result, self.message)
+        return "\n%s -- %s\n" % (self.result, self.message)
 
     __nonzero__ = __bool__

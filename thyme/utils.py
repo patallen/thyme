@@ -1,13 +1,22 @@
 import re
 import dateparser
 from datetime import datetime
+import arrow
 
-_FORMAT_PARTS = {
-    'yyyy': '%Y',
-    'yy': '%y',
-    'dd': '%d',
-    'mm': '%m'
-}
+
+def datetime_to_string(date, fmt):
+    if not _validate_format(fmt):
+        raise ValueError("Invalid format supplied.")
+    fmt = fmt.upper()
+    arrow_date = arrow.get(date)
+    formatted = arrow_date.format(fmt)
+    print("FORMATTED: %s" % formatted)
+    return formatted
+
+
+def _validate_format(fmt):
+    accept = 'YMD ,-/'
+    return all([c in accept for c in fmt.upper()])
 
 
 def assert_all_equal(alist):
