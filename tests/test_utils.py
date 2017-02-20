@@ -6,7 +6,9 @@ from thyme.utils import (
     make_timestamp,
     datetime_to_string,
     assert_all_equal,
-    _validate_format
+    gen_random_thing,
+    _validate_format,
+    _random_secret
 )
 
 good_dates = [
@@ -80,3 +82,38 @@ def test_validate_format():
     assert _validate_format(good)
     assert not _validate_format(bad)
 
+
+def test_gen_random_thing_uuid():
+    aliases = ('uuid', 'guid', 'uid', 'uuid4')
+    for string in aliases:
+        thing = gen_random_thing(string)
+        assert len(str(thing)) == 36
+        assert '-' in str(thing)
+
+
+def test_gen_random_thing_float():
+    aliases = ('float', 'decimal', 'dec')
+
+    for string in aliases:
+        thing = gen_random_thing(string)
+        assert type(thing) == float
+        assert '.' in str(thing)
+
+
+def test_gen_random_thing_int():
+    aliases = ('int', 'integer', 'num', 'number')
+
+    for string in aliases:
+        thing = gen_random_thing(string)
+        assert type(thing) == int
+        assert '.' not in str(thing)
+
+
+def test__random_secret():
+    sec = _random_secret()
+    assert len(sec) == 64
+    assert isinstance(sec, str)
+
+    sec = _random_secret(24)
+    assert len(sec) == 24
+    assert isinstance(sec, str)

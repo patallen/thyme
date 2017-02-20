@@ -1,6 +1,11 @@
-import dateparser
 from datetime import datetime
+import math
+import random
+import uuid
+import string
+
 import arrow
+import dateparser
 
 
 def datetime_to_string(date, fmt):
@@ -44,6 +49,40 @@ def make_timestamp(dt):
         raise TypeError("Must provide a valid datetime object.")
 
     return int(timestamp)
+
+
+def gen_random_thing(randthing, limit=None):
+    """Given a type string to match on, we generate a random instance.
+
+    :param randthing: <str> Random thing we will generate.
+    :param limit: <int> Size / max where applicable
+    """
+    randthing = randthing.lower()
+    limit = limit or 100
+    if randthing in ('uuid', 'guid', 'uid', 'uuid4'):
+        return uuid.uuid4()
+    if randthing in ('int', 'integer', 'num', 'number'):
+        return _random_int(limit)
+    if randthing in ('float', 'decimal', 'dec'):
+        return _random_float(limit)
+    if randthing in ('secret', 'secret_key', 'hash'):
+        return _random_secret(limit)
+
+    raise ValueError("Not a valid random thing.")
+
+
+def _random_secret(length=64):
+    chars = string.printable
+    return "".join([chars[_random_int(len(chars))] for _ in range(length)])
+
+
+def _random_int(upper_bound):
+    rand = random.random()
+    return int(math.floor(rand * (upper_bound + 1)))
+
+
+def _random_float(upper_bound):
+    return random.random() * upper_bound
 
 
 def _validate_format(fmt):

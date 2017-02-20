@@ -1,5 +1,11 @@
-from datetime import date as d, datetime as dt
-from utils import datetime_to_string, string_to_datetime, make_timestamp
+from datetime import datetime as dt
+
+from utils import (
+    datetime_to_string,
+    string_to_datetime,
+    make_timestamp,
+    gen_random_thing,
+)
 from results import ValidResult, InvalidResult
 
 
@@ -49,7 +55,7 @@ class DatetimeMode(Mode):
 
 
 class TimestampMode(Mode):
-    """Handles mode 'datetime'.
+    """Handles mode 'timestamp'.
 
     Takes a required datetime and optional format string.
     Returns the datetime as a UTC timestamp.
@@ -69,3 +75,24 @@ class TimestampMode(Mode):
         timestamp = make_timestamp(dt)
 
         return ValidResult(result=timestamp)
+
+
+class RandomMode(Mode):
+    """Handles mode 'random'.
+
+    Returns you with a random instance of whatever was requested.
+    """
+
+    def execute(self):
+        randthing = self._kwargs['<randthing>']
+        limit = self._kwargs.get('<limit>')
+
+        return self._execute(randthing, limit)
+
+    def _execute(self, randthing, limit=None):
+        try:
+            rand = gen_random_thing(randthing)
+        except ValueError:
+            return InvalidResult("couldn't do it.")
+
+        return ValidResult(result=rand)
