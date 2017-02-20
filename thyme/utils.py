@@ -1,10 +1,10 @@
-import re
 import dateparser
 from datetime import datetime
 import arrow
 
 
 def datetime_to_string(date, fmt):
+    """Convert a datetime object to a string using provided format."""
     if not _validate_format(fmt):
         raise ValueError("Invalid format supplied.")
     fmt = fmt.upper()
@@ -13,12 +13,8 @@ def datetime_to_string(date, fmt):
     return formatted
 
 
-def _validate_format(fmt):
-    accept = 'YMD ,-/'
-    return all([c in accept for c in fmt.upper()])
-
-
 def assert_all_equal(alist):
+    """Assert that all objects in a list are equal."""
     last = alist[0]
 
     if len(alist) == 1:
@@ -33,6 +29,7 @@ def assert_all_equal(alist):
 
 
 def string_to_datetime(string):
+    """Parse a date string and convert to datetime object."""
     parsed = dateparser.parse(string)
     if not parsed:
         raise ValueError("Could not parse date string.")
@@ -40,6 +37,7 @@ def string_to_datetime(string):
 
 
 def make_timestamp(dt):
+    """Turn a datetime object in to a Unix timestamp (UTC)."""
     try:
         timestamp = (dt - datetime(1970, 1, 1)).total_seconds()
     except TypeError:
@@ -48,10 +46,6 @@ def make_timestamp(dt):
     return int(timestamp)
 
 
-__all__ = [
-    assert_all_equal,
-    string_to_datetime,
-    make_timestamp,
-    datetime_to_string
-]
-
+def _validate_format(fmt):
+    accept = 'YMD ,-/'
+    return all([c in accept for c in fmt.upper()])
