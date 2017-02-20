@@ -84,13 +84,21 @@ class RandomMode(Mode):
 
     def execute(self):
         randthing = self._kwargs['<randthing>']
-        limit = self._kwargs.get('<limit>')
+        limit = self._kwargs.get('<limit>') or 100
 
         return self._execute(randthing, limit)
 
-    def _execute(self, randthing, limit=None):
+    def _execute(self, randthing, limit):
         try:
-            rand = gen_random_thing(randthing)
+            limit = int(limit)
+        except ValueError:
+            return InvalidResult("Limit must be an integer.")
+
+        if not limit > 0:
+            return InvalidResult("Limit must be greater than 0.")
+
+        try:
+            rand = gen_random_thing(randthing, limit)
         except ValueError:
             return InvalidResult("couldn't do it.")
 

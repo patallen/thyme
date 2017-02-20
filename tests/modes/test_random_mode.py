@@ -1,3 +1,5 @@
+import pytest
+
 from thyme.modes import RandomMode
 from thyme.results import ValidResult, InvalidResult
 
@@ -51,3 +53,15 @@ def test_random_mode_invalid_thing():
     res = rm.execute()
 
     assert isinstance(res, InvalidResult)
+
+
+def test_random_mode_invalid_limit():
+    rm = RandomMode({'<randthing>': 'float', '<limit>': '-10000'})
+    res = rm.execute()
+    assert isinstance(res, InvalidResult)
+    assert res.errors[0] == 'Limit must be greater than 0.'
+
+    rm = RandomMode({'<randthing>': 'float', '<limit>': '90.09'})
+    res = rm.execute()
+    assert isinstance(res, InvalidResult)
+    assert res.errors[0] == 'Limit must be an integer.'
