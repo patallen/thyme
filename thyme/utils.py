@@ -10,7 +10,6 @@ def datetime_to_string(date, fmt):
     fmt = fmt.upper()
     arrow_date = arrow.get(date)
     formatted = arrow_date.format(fmt)
-    print("FORMATTED: %s" % formatted)
     return formatted
 
 
@@ -22,7 +21,7 @@ def _validate_format(fmt):
 def assert_all_equal(alist):
     last = alist[0]
 
-    if len(last) == 1:
+    if len(alist) == 1:
         return True
 
     for l in alist:
@@ -31,55 +30,6 @@ def assert_all_equal(alist):
         last = l
 
     return True
-
-
-def get_strftime_format(fmt):
-    fmt = fmt.lower()
-    delim = _find_delimiter(fmt)
-    parts = _find_parts(fmt, delim)
-    strftime_fmt = _fmt_from_parts(parts, delim)
-    return strftime_fmt
-
-
-def _fmt_from_parts(parts, delimiter):
-    fmt_parts = []
-    for f in parts:
-        fmt_parts.append(_FORMAT_PARTS[f])
-
-    return delimiter.join(fmt_parts)
-
-
-def _find_delimiter(format_):
-    non_alphas = []
-    for c in format_:
-        if not c.isalnum():
-            non_alphas.append(c)
-
-    if assert_all_equal(non_alphas):
-        return non_alphas[0]
-
-    raise ValueError("Delimiters must all be the same.")
-
-possible_parts = [('yyyy', 'yy'), ('mm',), ('dd',)]
-
-
-def _find_parts(fmt, delimiter):
-    if delimiter:
-        return fmt.split(delimiter)
-
-    if not delimiter:
-        part_positions = []
-        for poss in possible_parts:
-            for p in poss:
-                match = re.search(p, fmt)
-                if match:
-                    part_positions.append((p, match.start()))
-                    break
-    if not part_positions:
-        return ['mm', 'dd', 'yyyy']
-
-    part_positions.sort(key=lambda x: x[1])
-    return [p[0] for p in part_positions]
 
 
 def string_to_datetime(string):
@@ -99,8 +49,9 @@ def make_timestamp(dt):
 
 
 __all__ = [
-    get_strftime_format,
     assert_all_equal,
-    string_to_datetime
+    string_to_datetime,
+    make_timestamp,
+    datetime_to_string
 ]
 
