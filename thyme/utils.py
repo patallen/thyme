@@ -27,11 +27,11 @@ def assert_all_equal(alist):
 
 def string_to_datetime(string):
     """Parse a date string and convert to datetime object."""
-    import dateparser
+    from datetime import datetime
+    from dateutil.parser import parse
 
-    parsed = dateparser.parse(string)
-    if not parsed:
-        raise ValueError("Could not parse date string.")
+    parsed = parse(string, default=datetime(1, 1, 1))
+
     return parsed
 
 
