@@ -42,10 +42,7 @@ class DatetimeMode(Mode):
         return formatted
 
     def _get_format(self, kwargs):
-        try:
-            fmt = kwargs.format
-        except:
-            pass
+        fmt = kwargs.format
         return fmt or self._default_format
 
     def _get_timestamp(self, kwargs):
@@ -102,9 +99,6 @@ class RandomMode(Mode):
         if not limit > 0:
             return InvalidResult("Limit must be greater than 0.")
 
-        try:
-            rand = gen_random_thing(randthing, limit)
-        except ValueError:
-            return InvalidResult("couldn't do it.")
+        rand = gen_random_thing(randthing, limit)
 
         return ValidResult(result=rand)

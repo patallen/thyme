@@ -76,7 +76,7 @@ def dispatch_mode(args):
     elif command == 'stamp':
         res = modes.TimestampMode(args)
     else:
-        raise Exception("Some error.")
+        raise Exception("Not a valid command.")  # pragma: no cover
 
     return res.execute()
 

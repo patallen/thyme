@@ -64,7 +64,7 @@ def gen_random_thing(randthing, limit=None):
     if randthing in 'secret':
         return _random_secret(limit)
 
-    raise ValueError("Not a valid random thing.")
+    raise ValueError("Not a valid random thing.")  # pragma: no cover
 
 
 def _random_secret(length=64):
