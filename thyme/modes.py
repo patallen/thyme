@@ -83,15 +83,18 @@ class RandomMode(Mode):
 
     def execute(self):
         randthing = self._kwargs.type
+
         try:
             limit = self._kwargs.limit
         except:
-            limit = 100
+            limit = 1
         return self._execute(randthing, limit)
 
     def _execute(self, randthing, limit):
         try:
             limit = int(limit)
+        except TypeError:
+            limit = None
         except ValueError:
             return InvalidResult("Limit must be an integer.")
 

@@ -13,9 +13,7 @@ class Thyme(object):
         self.mode_class = self._get_mode(kwargs)
 
     def _get_mode(self, kwargs):
-        for mode in self._modes.keys():
-            if kwargs.get(mode, False):
-                return self._modes[mode]
+        return self._modes[kwargs.command]
 
         # check if --version or --help here
         print("Did not supply a valid mode. Use 'thyme -h' for help.")

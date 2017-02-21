@@ -48,24 +48,21 @@ random_float = random_subparsers.add_parser(
     'float',
     help='Generate a random floating point integer.'
 )
-random_float.add_argument('-l', '--limit', dest='limit')
-random_float.add_argument('limit')
+random_float.add_argument('-l', '--limit', dest='limit', default=100)
 
 
 random_int = random_subparsers.add_parser(
     'int',
     help='Generate a random integer.'
 )
-random_int.add_argument('-l', '--limit', dest='limit')
-random_int.add_argument('limit')
+random_int.add_argument('-l', '--limit', dest='limit', default=100)
 
 
 random_secret = random_subparsers.add_parser(
     'secret',
     help='Generate a random ASCII secret key.'
 )
-random_secret.add_argument('-l', '--limit', dest='limit')
-random_secret.add_argument('limit')
+random_secret.add_argument('-l', '--limit', dest='limit', default=64)
 
 
 def main():

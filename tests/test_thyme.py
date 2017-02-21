@@ -2,20 +2,26 @@ from thyme.thyme import Thyme
 from thyme.modes import DatetimeMode, TimestampMode
 
 
+from thyme.cli import parser
+
+
 def test_thyme_init():
-    thyme = Thyme({'datetime': True})
-    assert len(thyme._kwargs)
+    argv = 'date 12345656'.split()
+    dt = Thyme(parser.parse_args(argv))
+    assert dt._kwargs
 
 
 def test_thyme__get_mode():
-    dt = Thyme({'date': True})
+    argv = 'date 12345656'.split()
+    dt = Thyme(parser.parse_args(argv))
     assert dt._get_mode(dt._kwargs) == DatetimeMode
 
-    stamp = Thyme({'stamp': True})
+    argv = ['stamp', '10-10-2010']
+    stamp = Thyme(parser.parse_args(argv))
     assert stamp._get_mode(stamp._kwargs) == TimestampMode
 
 
 def test_thyme_run():
-    thyme = Thyme({'date': True})
-
-    assert thyme.run() is None
+    argv = 'date 12345656'.split()
+    dt = Thyme(parser.parse_args(argv))
+    assert dt.run() is None

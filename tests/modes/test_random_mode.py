@@ -24,7 +24,7 @@ def test_random_mode_uuid():
 
 
 def test_random_mode_int():
-    argv = 'random int 10000'
+    argv = 'random int -l10000'
     args = parser.parse_args(argv.split())
     rm = RandomMode(args)
     res = rm.execute()
@@ -36,7 +36,7 @@ def test_random_mode_int():
 
 
 def test_random_mode_float():
-    argv = 'random float 10000'
+    argv = 'random float -l10000'
     args = parser.parse_args(argv.split())
     rm = RandomMode(args)
     res = rm.execute()
@@ -48,8 +48,8 @@ def test_random_mode_float():
 
 
 def test_random_mode_secret():
-    argv = 'random secret 100'
-    args = parser.parse_args(argv.split())
+    argv = ['random', 'secret', '-l 100']
+    args = parser.parse_args(argv)
     rm = RandomMode(args)
     res = rm.execute()
 
@@ -59,14 +59,14 @@ def test_random_mode_secret():
 
 
 def test_random_mode_invalid_limit():
-    argv = 'random float -100000'
+    argv = 'random float -l-100000'
     args = parser.parse_args(argv.split())
     rm = RandomMode(args)
     res = rm.execute()
     assert isinstance(res, InvalidResult)
     assert res.errors[0] == 'Limit must be greater than 0.'
 
-    argv = 'random float 90.09'
+    argv = 'random float -l90.09'
     args = parser.parse_args(argv.split())
     rm = RandomMode(args)
     res = rm.execute()
