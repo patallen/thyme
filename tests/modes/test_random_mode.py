@@ -2,14 +2,20 @@ from thyme.modes import RandomMode
 from thyme.results import ValidResult, InvalidResult
 
 
+from thyme.cli import parser
+
+
 def test_random_mode_init():
-    rm = RandomMode({'<randthing>': 'uuid', '<limit>': None})
-    assert rm._kwargs['<randthing>'] == 'uuid'
-    assert rm._kwargs['<limit>'] is None
+    argv = 'random uuid'
+    args = parser.parse_args(argv.split())
+    rm = RandomMode(args)
+    assert rm._kwargs.type == 'uuid'
 
 
 def test_random_mode_uuid():
-    rm = RandomMode({'<randthing>': 'uuid', '<limit>': 10000})
+    argv = 'random uuid'
+    args = parser.parse_args(argv.split())
+    rm = RandomMode(args)
     res = rm.execute()
 
     assert isinstance(res, ValidResult)
@@ -18,7 +24,9 @@ def test_random_mode_uuid():
 
 
 def test_random_mode_int():
-    rm = RandomMode({'<randthing>': 'int', '<limit>': 10000})
+    argv = 'random int 10000'
+    args = parser.parse_args(argv.split())
+    rm = RandomMode(args)
     res = rm.execute()
 
     assert isinstance(res, ValidResult)
@@ -28,7 +36,9 @@ def test_random_mode_int():
 
 
 def test_random_mode_float():
-    rm = RandomMode({'<randthing>': 'float', '<limit>': 10000})
+    argv = 'random float 10000'
+    args = parser.parse_args(argv.split())
+    rm = RandomMode(args)
     res = rm.execute()
 
     assert isinstance(res, ValidResult)
@@ -38,7 +48,9 @@ def test_random_mode_float():
 
 
 def test_random_mode_secret():
-    rm = RandomMode({'<randthing>': 'secret', '<limit>': 100})
+    argv = 'random secret 100'
+    args = parser.parse_args(argv.split())
+    rm = RandomMode(args)
     res = rm.execute()
 
     assert isinstance(res, ValidResult)
@@ -46,20 +58,17 @@ def test_random_mode_secret():
     assert len(res.result) == 100
 
 
-def test_random_mode_invalid_thing():
-    rm = RandomMode({'<randthing>': 'sdfdsdfg'})
-    res = rm.execute()
-
-    assert isinstance(res, InvalidResult)
-
-
 def test_random_mode_invalid_limit():
-    rm = RandomMode({'<randthing>': 'float', '<limit>': '-10000'})
+    argv = 'random float -100000'
+    args = parser.parse_args(argv.split())
+    rm = RandomMode(args)
     res = rm.execute()
     assert isinstance(res, InvalidResult)
     assert res.errors[0] == 'Limit must be greater than 0.'
 
-    rm = RandomMode({'<randthing>': 'float', '<limit>': '90.09'})
+    argv = 'random float 90.09'
+    args = parser.parse_args(argv.split())
+    rm = RandomMode(args)
     res = rm.execute()
     assert isinstance(res, InvalidResult)
     assert res.errors[0] == 'Limit must be an integer.'

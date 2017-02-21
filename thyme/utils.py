@@ -55,22 +55,26 @@ def gen_random_thing(randthing, limit=None):
     import uuid as uu
     randthing = randthing.lower()
     limit = limit or 100
-    if randthing in ('uuid', 'guid', 'uid', 'uuid4'):
+    if randthing == 'uuid':
         return uu.uuid4()
-    if randthing in ('int', 'integer', 'num', 'number'):
+    if randthing in 'int':
         return _random_int(limit)
-    if randthing in ('float', 'decimal', 'dec'):
+    if randthing in 'float':
         return _random_float(limit)
-    if randthing in ('secret', 'secret_key', 'hash'):
+    if randthing in 'secret':
         return _random_secret(limit)
 
     raise ValueError("Not a valid random thing.")
 
 
 def _random_secret(length=64):
-    import string
-    chars = string.printable
-    return "".join([chars[_random_int(len(chars) - 1)] for _ in range(length)])
+    lower = 'abcdefghijklmnopqrstuvwxyz'
+    upper = lower.upper()
+    digits = '0123456789'
+    chars = '!@#$%^&*()?~-_=+:;,.`'
+    cs = '%s%s%s%s' % (lower, upper, digits, chars)
+    thing = "".join([cs[_random_int(len(cs) - 1)] for _ in range(length)])
+    return thing.format('hex')
 
 
 def _random_int(upper_bound):

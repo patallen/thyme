@@ -3,6 +3,7 @@ import pytest
 from thyme.modes import DatetimeMode
 from thyme.results import ValidResult, InvalidResult
 
+from thyme.cli import parser
 
 in_stamp = 635904000
 
@@ -22,10 +23,10 @@ bad_kwargs = {
 
 
 def test_datetime_mode_good_kwargs_no_format():
-    kwargs = {
-        '<timestamp>': 635904000,
-    }
-    timestamp_mode = DatetimeMode(kwargs)
+    argv = ['date', '635904000']
+    args = parser.parse_args(argv)
+
+    timestamp_mode = DatetimeMode(args)
 
     res = timestamp_mode.execute()
     assert isinstance(res, ValidResult)
@@ -34,11 +35,10 @@ def test_datetime_mode_good_kwargs_no_format():
 
 
 def test_datetime_mode_good_kwargs_w_format():
-    kwargs = {
-        '<timestamp>': 635904000,
-        '--format': 'YYYY MMM DD'
-    }
-    timestamp_mode = DatetimeMode(kwargs)
+    argv = ['date', '-fYYYY MMM DD', '635904000']
+    args = parser.parse_args(argv)
+
+    timestamp_mode = DatetimeMode(args)
 
     res = timestamp_mode.execute()
     assert isinstance(res, ValidResult)
@@ -47,27 +47,26 @@ def test_datetime_mode_good_kwargs_w_format():
 
 
 def test_datetime_mode_bad_kwargs():
-    kwargs = {
-        '<timestamp>': '89dsljklse12'
-    }
-    timestamp_mode = DatetimeMode(kwargs)
+    argv = ['date', '89dsljklse12']
+    args = parser.parse_args(argv)
+
+    timestamp_mode = DatetimeMode(args)
 
     res = timestamp_mode.execute()
     assert isinstance(res, InvalidResult)
 
 
 def test_datetime_mode_invalid_format():
-
-    kwargs = {
-        '<timestamp>': 635904000,
-        '--format': 'zlkfjldsakfj'
-    }
-    timestamp_mode = DatetimeMode(kwargs)
+    argv = ['date', 'dsfasdfads']
+    args = parser.parse_args(argv)
+    timestamp_mode = DatetimeMode(args)
     res = timestamp_mode.execute()
     assert isinstance(res, InvalidResult)
 
 
 def test_datetime_mode_invalid_input():
-    dtm = DatetimeMode({'<timestamp>': 'z'})
+    argv = 'date 567890 --format=dsfd'.split()
+    args = parser.parse_args(argv)
+    dtm = DatetimeMode(args)
     with pytest.raises(ValueError):
         assert dtm._execute()

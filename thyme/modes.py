@@ -42,13 +42,16 @@ class DatetimeMode(Mode):
         return formatted
 
     def _get_format(self, kwargs):
-        f1 = kwargs.get('--format')
-        f2 = kwargs.get('-f')
-        return f1 or f2 or self._default_format
+        try:
+            fmt = kwargs.format
+        except:
+            pass
+        return fmt or self._default_format
 
     def _get_timestamp(self, kwargs):
+        print("KWARGS", kwargs)
         try:
-            return float(kwargs.get('<timestamp>'))
+            return int(kwargs.timestamp)
         except ValueError:
             raise ValueError('Timestamp must convertable to a float.')
 
@@ -61,7 +64,7 @@ class TimestampMode(Mode):
     """
 
     def execute(self):
-        datestring = self._kwargs['<datestring>']
+        datestring = self._kwargs.timestamp
 
         return self._execute(datestring)
 
@@ -83,9 +86,11 @@ class RandomMode(Mode):
     """
 
     def execute(self):
-        randthing = self._kwargs['<randthing>']
-        limit = self._kwargs.get('<limit>') or 100
-
+        randthing = self._kwargs.type
+        try:
+            limit = self._kwargs.limit
+        except:
+            limit = 100
         return self._execute(randthing, limit)
 
     def _execute(self, randthing, limit):

@@ -83,29 +83,21 @@ def test_validate_format():
 
 
 def test_gen_random_thing_uuid():
-    aliases = ('uuid', 'guid', 'uid', 'uuid4')
-    for string in aliases:
-        thing = gen_random_thing(string)
-        assert len(str(thing)) == 36
-        assert '-' in str(thing)
+    thing = gen_random_thing('uuid')
+    assert len(str(thing)) == 36
+    assert '-' in str(thing)
 
 
 def test_gen_random_thing_float():
-    aliases = ('float', 'decimal', 'dec')
-
-    for string in aliases:
-        thing = gen_random_thing(string)
-        assert type(thing) == float
-        assert '.' in str(thing)
+    thing = gen_random_thing('float')
+    assert type(thing) == float
+    assert '.' in str(thing)
 
 
 def test_gen_random_thing_int():
-    aliases = ('int', 'integer', 'num', 'number')
-
-    for string in aliases:
-        thing = gen_random_thing(string)
-        assert type(thing) == int
-        assert '.' not in str(thing)
+    thing = gen_random_thing('int')
+    assert type(thing) == int
+    assert '.' not in str(thing)
 
 
 def test__random_secret():
