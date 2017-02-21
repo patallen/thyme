@@ -65,7 +65,6 @@ class TimestampMode(Mode):
         return self._execute(datestring)
 
     def _execute(self, datestring):
-        print(self._kwargs)
         try:
             dt = string_to_datetime(datestring)
         except:

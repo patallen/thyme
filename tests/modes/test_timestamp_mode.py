@@ -11,7 +11,6 @@ return_stamp = 635904000
 def test_timestamp_mode_good_kwargs():
     argv = ['stamp', 'feb 25 1990']
     args = parser.parse_args(argv)
-    print("ARGS", args)
     timestamp_mode = TimestampMode(args)
 
     assert isinstance(timestamp_mode.execute(), ValidResult)

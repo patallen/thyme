@@ -1,5 +1,6 @@
 import argparse
 from . import modes
+from .thyme import Thyme
 
 
 parser = argparse.ArgumentParser(
@@ -67,24 +68,10 @@ random_secret.add_argument('-l', '--limit', dest='limit')
 random_secret.add_argument('limit')
 
 
-def dispatch_mode(args):
-    command = args.command
-    if command == 'random':
-        res = modes.RandomMode(args)
-    elif command == 'date':
-        res = modes.DatetimeMode(args)
-    elif command == 'stamp':
-        res = modes.TimestampMode(args)
-    else:
-        raise Exception("Not a valid command.")  # pragma: no cover
-
-    return res.execute()
-
-
 def main():
     args = parser.parse_args()
-    res = dispatch_mode(args)
-    print(res)
+    thyme = Thyme(args)
+    thyme.run()
 
 if __name__ == '__main__':
     main()
