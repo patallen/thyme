@@ -49,7 +49,6 @@ class DatetimeMode(Mode):
         return fmt or self._default_format
 
     def _get_timestamp(self, kwargs):
-        print("KWARGS", kwargs)
         try:
             return int(kwargs.timestamp)
         except ValueError:
@@ -64,11 +63,12 @@ class TimestampMode(Mode):
     """
 
     def execute(self):
-        datestring = self._kwargs.timestamp
+        datestring = self._kwargs.date
 
         return self._execute(datestring)
 
     def _execute(self, datestring):
+        print(self._kwargs)
         try:
             dt = string_to_datetime(datestring)
         except:

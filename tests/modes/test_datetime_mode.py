@@ -8,20 +8,6 @@ from thyme.cli import parser
 in_stamp = 635904000
 
 
-good_kwargs_no_format = {
-    '<timestamp>': 635904000,
-}
-
-good_kwargs = {
-    '<timestamp>': 635904000,
-    '--format': 'YYYY MMM DD'
-}
-
-bad_kwargs = {
-    '<timestamp>': '89dsljklse12'
-}
-
-
 def test_datetime_mode_good_kwargs_no_format():
     argv = ['date', '635904000']
     args = parser.parse_args(argv)
