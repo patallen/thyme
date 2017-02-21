@@ -40,6 +40,6 @@ class ValidResult(object):
         return True
 
     def __str__(self):
-        return "\n%s -- %s\n" % (self.result, self.message)
+        return "\n%s\n" % self.result
 
     __nonzero__ = __bool__
