@@ -8,6 +8,7 @@ from .results import ValidResult, InvalidResult
 
 
 class Mode(object):
+    """Mode (command) base class."""
 
     def __init__(self, kwargs):
         self._kwargs = kwargs
@@ -45,7 +46,8 @@ class DatetimeMode(Mode):
         fmt = kwargs.format
         return fmt or self._default_format
 
-    def _get_timestamp(self, kwargs):
+    @staticmethod
+    def _get_timestamp(kwargs):
         try:
             return int(kwargs.timestamp)
         except ValueError:
@@ -64,7 +66,8 @@ class TimestampMode(Mode):
 
         return self._execute(datestring)
 
-    def _execute(self, datestring):
+    @staticmethod
+    def _execute(datestring):
         try:
             dt = string_to_datetime(datestring)
         except:
@@ -90,7 +93,8 @@ class RandomMode(Mode):
             limit = 1
         return self._execute(randthing, limit)
 
-    def _execute(self, randthing, limit):
+    @staticmethod
+    def _execute(randthing, limit):
         try:
             limit = int(limit)
         except TypeError:

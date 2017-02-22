@@ -72,8 +72,8 @@ def _random_secret(length=64):
     upper = lower.upper()
     digits = '0123456789'
     chars = '!@#$%^&*()?~-_=+:;,.`'
-    cs = '%s%s%s%s' % (lower, upper, digits, chars)
-    thing = "".join([cs[_random_int(len(cs) - 1)] for _ in range(length)])
+    cs = '{0}{1}{2}{3}'.format(lower, upper, digits, chars)
+    thing = "".join(cs[_random_int(len(cs) - 1)] for _ in range(length))
     return thing.format('hex')
 
 
@@ -91,4 +91,4 @@ def _random_float(upper_bound):
 
 def _validate_format(fmt):
     accept = 'YMD ,-/'
-    return all([c in accept for c in fmt.upper()])
+    return all(c in accept for c in fmt.upper())

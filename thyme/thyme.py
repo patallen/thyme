@@ -2,6 +2,8 @@ from .modes import DatetimeMode, TimestampMode, RandomMode
 
 
 class Thyme(object):
+    """Main runner object. Use <instance>.run() to execute command."""
+
     _modes = {
         'date': DatetimeMode,
         'stamp': TimestampMode,
@@ -14,9 +16,6 @@ class Thyme(object):
 
     def _get_mode(self, kwargs):
         return self._modes[kwargs.command]
-
-        # check if --version or --help here
-        print("Did not supply a valid mode. Use 'thyme -h' for help.")
 
     def run(self):
         self.mode = self.mode_class(self._kwargs)
