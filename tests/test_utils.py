@@ -8,7 +8,7 @@ from thyme.utils import (
     assert_all_equal,
     gen_random_thing,
     _validate_format,
-    _random_secret
+    random_secret
 )
 
 good_dates = [
@@ -100,11 +100,11 @@ def test_gen_random_thing_int():
     assert '.' not in str(thing)
 
 
-def test__random_secret():
-    sec = _random_secret()
+def test_random_secret():
+    sec = random_secret()
     assert len(sec) == 64
     assert isinstance(sec, str)
 
-    sec = _random_secret(24)
+    sec = random_secret(24)
     assert len(sec) == 24
     assert isinstance(sec, str)
