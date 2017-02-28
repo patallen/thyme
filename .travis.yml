@@ -7,8 +7,5 @@ python:
   - "3.5"
   - "3.6"
 
-install:
- - pip install wheel
- - python setup.py install bdist_wheel
-
+install: pip install -r requirements/development.txt
 script: pytest
