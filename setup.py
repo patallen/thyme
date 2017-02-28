@@ -34,6 +34,9 @@ setup(
             'thyme = thyme.cli:main',
         ],
     },
+    extras_require={
+        ':python_version=="3.2"': ['pytest<3'],
+    },
     keywords='devtool productivity date timestamp uuid secret',
     packages=find_packages(exclude=['docs', 'tests', 'dist']),
 )

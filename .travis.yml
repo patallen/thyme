@@ -6,7 +6,10 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-# command to install dependencies
-install: "pip install -r requirements/development.txt"
-# command to run tests
+
+install:
+ - pip install wheel
+ - python setup.py install bdist_wheel
+ - pip install ./dist/tox_travis-*.whl
+
 script: pytest
