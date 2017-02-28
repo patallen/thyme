@@ -10,6 +10,5 @@ python:
 install:
  - pip install wheel
  - python setup.py install bdist_wheel
- - pip install ./dist/tox_travis-*.whl
 
 script: pytest
