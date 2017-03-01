@@ -20,11 +20,8 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.1',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
@@ -34,6 +31,11 @@ setup(
             'thyme = thyme.cli:main',
         ],
     },
+    install_requires=[
+        'argparse==1.4.0',
+        'arrow==0.10.0',
+        'python-dateutil==2.6.0',
+    ],
     extras_require={
         ':python_version=="3.2"': ['pytest<3'],
     },
