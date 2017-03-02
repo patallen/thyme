@@ -1,5 +1,16 @@
 import random
 
+to_bytes_rates = {
+    'mb': 1024,
+    'gb': (1024 * 1024),
+    'tb': (1024 * 1024 * 1024),
+}
+
+
+def to_bytes(val, denom):
+    rate = to_bytes_rates[denom]
+    return val * float(rate)
+
 
 def datetime_to_string(date, fmt):
     """Convert a datetime object to a string using provided format."""

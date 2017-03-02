@@ -8,7 +8,8 @@ from thyme.utils import (
     assert_all_equal,
     gen_random_thing,
     _validate_format,
-    random_secret
+    random_secret,
+    to_bytes
 )
 
 good_dates = [
@@ -108,3 +109,14 @@ def test_random_secret():
     sec = random_secret(24)
     assert len(sec) == 24
     assert isinstance(sec, str)
+
+
+def test_to_bytes():
+    bs = to_bytes(10, 'mb')
+    assert bs == 10240
+
+    bs = to_bytes(10, 'gb')
+    assert bs == 1024 * 1024 * 10
+
+    bs = to_bytes(10, 'tb')
+    assert bs == 1024 * 1024 * 1024 * 10
