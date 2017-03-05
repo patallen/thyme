@@ -102,52 +102,58 @@ def test_random_secret():
     assert isinstance(sec, str)
 
 
-def test_to_bytes():
-    bs = utils.to_bytes(10, 'b')
-    assert bs == 10
+def test_denomed_size():
+    kb_denom = utils.DenomedSize.from_string('10kb')
+    mb_denom = utils.DenomedSize.from_string('10mb')
+    gb_denom = utils.DenomedSize.from_string('10gb')
+    tb_denom = utils.DenomedSize.from_string('10tb')
+    pb_denom = utils.DenomedSize.from_string('10pb')
 
-    expected = bs * 1024
-    bs = utils.to_bytes(10, 'kb')
-    assert bs == expected
-
-    expected = bs * 1024
-    bs = utils.to_bytes(10, 'mb')
-    assert bs == expected
-
-    expected = bs * 1024
-    bs = utils.to_bytes(10, 'gb')
-    assert bs == expected
-
-    expected = bs * 1024
-    bs = utils.to_bytes(10, 'tb')
-    assert bs == expected
-
-    expected = bs * 1024
-    bs = utils.to_bytes(10, 'pb')
-    assert bs == expected
+    assert kb_denom.to_bytes() == 10240
+    assert mb_denom.to_bytes() == 10485760
+    assert gb_denom.to_bytes() == 10737418240
+    assert tb_denom.to_bytes() == 10995116277760
+    assert pb_denom.to_bytes() == 11258999068426240
 
 
-def test_to_bytes_invalid():
+def test_denomed_size_non_lowercase():
+    kb_denom = utils.DenomedSize.from_string('10KB')
+    assert kb_denom.to_bytes() == 10240
+
+
+def test_invalid_denomed_size_string():
     with pytest.raises(ValueError):
-        utils.to_bytes(10, 'notvalid')
+        utils.DenomedSize.from_string('10badbad')
 
 
 def test_get_all_rates():
-    bytes_ = 10
+    bytes_ = 9000.0
     rates = utils.get_all_rates(bytes_)
 
     expected = [
-        (10, 'b'), (10240, 'kb'), (10485760, 'mb'), (10737418240, 'gb'),
-        (10995116277760, 'tb'), (11258999068426240, 'pb')
+        (bytes_, 'b'), (bytes_ / 1024, 'kb'), (bytes_ / 1048576, 'mb'),
+        (bytes_ / 1073741824, 'gb'), (bytes_ / 1099511627776, 'tb'),
+        (bytes_ / 1125899906842624, 'pb')
     ]
 
     assert rates == expected
 
 
+def test__parse_size_string():
+    expected = (10, 'kb')
+    assert expected == utils._parse_size_string('10kb')
+
+    with pytest.raises(ValueError):
+        utils._parse_size_string('12345')
+
+
 def test_format_rates():
-    rates = utils.get_all_rates(10)
-    expected = ("Bytes:\t10\nKilobytes:\t10240\nMegabytes:\t10485760\n"
-                "Gigabytes:\t10737418240\nTerabytes:\t10995116277760\n"
-                "Petabytes:\t11258999068426240")
+    rates = utils.get_all_rates(9000.0)
+    expected = ("    Bytes:  9000\n"
+                "Kilobytes:  8.78906\n"
+                "Megabytes:  0.00858307\n"
+                "Gigabytes:  8.3819e-06\n"
+                "Terabytes:  8.18545e-09\n"
+                "Petabytes:  7.99361e-12")
 
     assert utils.format_rates(rates) == expected
