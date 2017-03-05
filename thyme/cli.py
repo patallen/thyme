@@ -1,5 +1,4 @@
 import argparse
-from . import modes
 from .thyme import Thyme
 
 
@@ -31,6 +30,12 @@ stamp = subparsers.add_parser(
     help='Convert a UTC datetime to a Unix timestamp.'
 )
 stamp.add_argument('date')
+
+convert = subparsers.add_parser(
+    'convert',
+    help='Convert something to something else.'
+)
+convert.add_argument('toconvert')
 
 
 random_subparsers = random.add_subparsers(
