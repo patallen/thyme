@@ -1,4 +1,4 @@
-from .modes import DatetimeMode, TimestampMode, RandomMode
+from .modes import DatetimeMode, TimestampMode, RandomMode, ConvertMode
 
 
 class Thyme(object):
@@ -7,7 +7,8 @@ class Thyme(object):
     _modes = {
         'date': DatetimeMode,
         'stamp': TimestampMode,
-        'random': RandomMode
+        'random': RandomMode,
+        'convert': ConvertMode
     }
 
     def __init__(self, kwargs):
