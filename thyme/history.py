@@ -19,7 +19,7 @@ class HistoryFile(object):
         try:
             with open(filepath, 'r'):
                 pass
-        except FileNotFoundError:
+        except IOError:
             with open(filepath, 'w'):
                 pass
 

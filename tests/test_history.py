@@ -51,7 +51,7 @@ def test_write_command():
     command.to_string = mock.MagicMock(return_value='dude')
 
     file.write_command(command)
-    file.writeline.assert_called()
+    assert file.writeline.called
     remove_temp()
 
 
