@@ -3,6 +3,9 @@ from .utils import (
     string_to_datetime,
     make_timestamp,
     gen_random_thing,
+    DenomedSize,
+    format_rates,
+    get_all_rates
 )
 from .results import ValidResult, InvalidResult
 
@@ -15,6 +18,35 @@ class Mode(object):
 
     def execute(self):
         raise NotImplementedError  # pragma: no cover
+
+
+class ConvertMode(Mode):
+    """Handles mode 'datetime'.
+
+    Takes a required timestamp and optional format string.
+    Returns the timestamp as a formatted date.
+    """
+
+    def execute(self):
+        try:
+            result = self._execute()
+        except Exception as e:
+            print(e)
+            return InvalidResult('Unable to convert.')
+
+        return ValidResult(result=result)
+
+    def _execute(self):
+        denomed = DenomedSize.from_string(self._kwargs.toconvert)
+        in_bytes = denomed.to_bytes()
+        all_rates = get_all_rates(in_bytes)
+        return format_rates(all_rates)
+
+    def _parse_input(self, value):
+        for index, char in enumerate(value):
+            if char not in '1234567890':
+                return int(value[:index]), value[index:]
+        raise ValueError("Unable to parse conversion input.")
 
 
 class DatetimeMode(Mode):
