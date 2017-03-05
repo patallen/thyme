@@ -1,15 +1,58 @@
 import random
 
-to_bytes_rates = {
-    'mb': 1024,
-    'gb': (1024 * 1024),
-    'tb': (1024 * 1024 * 1024),
+
+class ByteRate(object):
+    """A simple helper object for encapsulating byte rate information."""
+
+    def __init__(self, value, name, abbreviation):
+        self.name = name
+        self.value = value
+        self.abbreviation = abbreviation
+
+    def __mul__(self, other):
+        return other * self.value
+
+
+class ByteRateEnum(object):
+    """Conversion rates for denominations from bytes."""
+
+    BYTE     = ByteRate(1, 'Bytes', 'b')
+    KILOBYTE = ByteRate(1024, 'Kilobytes', 'kb')
+    MEGABYTE = ByteRate(1048576, 'Megabytes', 'mb')
+    GIGABYTE = ByteRate(1073741824, 'Gigabytes', 'gb')
+    TERABYTE = ByteRate(1099511627776, 'Terabytes', 'tb')
+    PETABYTE = ByteRate(1125899906842624, 'Petabytes', 'pb')
+
+
+RATE_MAP = {
+    'b' : ByteRateEnum.BYTE,
+    'kb': ByteRateEnum.KILOBYTE,
+    'mb': ByteRateEnum.MEGABYTE,
+    'gb': ByteRateEnum.GIGABYTE,
+    'tb': ByteRateEnum.TERABYTE,
+    'pb': ByteRateEnum.PETABYTE,
 }
 
 
 def to_bytes(val, denom):
-    rate = to_bytes_rates[denom]
+    """Convert kb, mb, gb, tb, or pb, to bytes."""
+    try:
+        rate = RATE_MAP[denom].value
+    except KeyError:
+        raise ValueError("Not a valid denomination.")
     return val * float(rate)
+
+
+def get_all_rates(bytes_):
+    """Convert bytes to kb, mb, gb, tb, and pb."""
+    converteds = [(v * bytes_, k) for k, v in RATE_MAP.items()]
+    return sorted(converteds, key=lambda x: x[0])
+
+
+def format_rates(rates):
+    """Return the rates formatted in a visually appealing way."""
+    formatted = ("{}:\t{}".format(RATE_MAP[r[1]].name, r[0]) for r in rates)
+    return "\n".join(formatted)
 
 
 def datetime_to_string(date, fmt):
