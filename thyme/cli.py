@@ -70,6 +70,13 @@ random_secret = random_subparsers.add_parser(
 random_secret.add_argument('-l', '--limit', dest='limit', default=64)
 
 
+history = subparsers.add_parser(
+    'history',
+    help='Thyme History'
+)
+history.add_argument('search', default=None, nargs='?')
+
+
 def main():
     args = parser.parse_args()
     thyme = Thyme(args)

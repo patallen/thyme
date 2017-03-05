@@ -7,6 +7,7 @@ from .utils import (
     format_rates,
     get_all_rates
 )
+from .history import History
 from .results import ValidResult, InvalidResult
 
 
@@ -17,6 +18,9 @@ class Mode(object):
         self._kwargs = kwargs
 
     def execute(self):
+        raise NotImplementedError  # pragma: no cover
+
+    def to_string(self):
         raise NotImplementedError  # pragma: no cover
 
 
@@ -30,8 +34,7 @@ class ConvertMode(Mode):
     def execute(self):
         try:
             result = self._execute()
-        except Exception as e:
-            print(e)
+        except Exception:
             return InvalidResult('Unable to convert.')
 
         return ValidResult(result=result)
@@ -47,6 +50,9 @@ class ConvertMode(Mode):
             if char not in '1234567890':
                 return int(value[:index]), value[index:]
         raise ValueError("Unable to parse conversion input.")
+
+    def to_string(self):
+        return '{} {}'.format(self._kwargs.command, self._kwargs.toconvert)
 
 
 class DatetimeMode(Mode):
@@ -85,6 +91,9 @@ class DatetimeMode(Mode):
         except ValueError:
             raise ValueError('Timestamp must convertable to a float.')
 
+    def to_string(self):
+        return '{} {}'.format(self._kwargs.command, self._kwargs.timestamp)
+
 
 class TimestampMode(Mode):
     """Handles mode 'timestamp'.
@@ -108,6 +117,17 @@ class TimestampMode(Mode):
         timestamp = make_timestamp(dt)
 
         return ValidResult(result=timestamp)
+
+    def to_string(self):
+        date = self._kwargs.date
+        command = self._kwargs.command
+        try:
+            int(date)
+        except ValueError:
+            if ' ' in date:
+                date = "'{}'".format(date)
+
+        return '{0} {1}'.format(command, date)
 
 
 class RandomMode(Mode):
@@ -140,3 +160,47 @@ class RandomMode(Mode):
         rand = gen_random_thing(randthing, limit)
 
         return ValidResult(result=rand)
+
+    def to_string(self):
+        command = self._kwargs.command
+        type_ = self._kwargs.type
+
+        try:
+            limit = self._kwargs.limit
+        except AttributeError:
+            limit = None
+
+        if not limit:
+            return '{0} {1}'.format(command, type_)
+
+        return '{0} {1} -l{2}'.format(command, type_, limit)
+
+
+class HistoryMode(Mode):
+    """Handles mode 'random'.
+
+    Returns you with a random instance of whatever was requested.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(HistoryMode, self).__init__(*args, **kwargs)
+        self.history = History()
+
+    def execute(self):
+        search = self._kwargs.search
+        if search:
+            res = self.history.search(search)
+
+        else:
+            res = self.history.list()
+
+        return ValidResult(result=res)
+
+    def to_string(self):
+        search = self._kwargs.search
+        command = self._kwargs.command
+
+        if search:
+            return "{0} '{1}'".format(self._kwargs.command, search)
+
+        return command
