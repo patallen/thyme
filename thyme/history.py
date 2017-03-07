@@ -54,8 +54,6 @@ class HistoryFile(object):
         except IOError:
             with open(filepath, 'w'):
                 pass
-        except Exception as e:
-            raise ThymeHistoryFileException(e)
 
     def _maybe_truncate(self):
         lines = self.readlines()
@@ -91,8 +89,8 @@ class History(object):
     def execute(self, mode, *args, **kwargs):
         """Method used to record a command.
 
-        We take a mode <thyme.modes.Mode> and run it's `execute` method
-        after writing the command to the history file.
+        We take a mode <thyme.modes.Mode> and run it's `execute` method,
+        write the command to the history file, and then return the value.
         """
         rv = mode.execute(*args, **kwargs)
         self.file.write_command(mode)

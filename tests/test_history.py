@@ -26,6 +26,14 @@ def test_history_file(remove_temp):
     assert file.encoder is not None
 
 
+def test_bad_permissions_history_file(remove_temp):
+    with open(TEMP_PATH, 'w'):
+        pass
+    os.chmod(TEMP_PATH, 1)
+    with pytest.raises(Exception):
+        HistoryFile(TEMP_PATH, 200)
+
+
 def test_readlines(remove_temp):
     file = HistoryFile(TEMP_PATH, 200)
     with open('/tmp/temp', 'w') as f:
