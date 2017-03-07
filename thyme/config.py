@@ -1,5 +1,6 @@
 import os
 
+
 DEFAULT_HISTORY_FILEPATH = '~/.thyme_history'
 DEFAULT_HISTORY_SIZE = 50000
 HISTORY_FILE_ENVAR = 'THYME_HISTORY_FILEPATH'
@@ -7,6 +8,7 @@ MAX_HISTORY_SIZE_ENVAR = 'THYME_HISTORY_SIZE'
 
 
 def get_history_filepath():
+    """Get the history filepath from the environment or default."""
     try:
         user_fp = os.environ[HISTORY_FILE_ENVAR]
         return os.path.expanduser(user_fp)
@@ -15,6 +17,7 @@ def get_history_filepath():
 
 
 def get_max_history_size():
+    """Get the max history size from environment or default."""
     try:
         size = os.environ[MAX_HISTORY_SIZE_ENVAR]
     except KeyError:
