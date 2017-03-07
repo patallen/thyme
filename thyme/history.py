@@ -1,5 +1,5 @@
-import os
 import time
+from . import config
 
 
 class ThymeException(BaseException):
@@ -15,8 +15,9 @@ class ThymeHistoryFileException(ThymeException):
 
 
 class HistoryFile(object):
-    def __init__(self, filepath):
+    def __init__(self, filepath, max_length):
         self._ensure_file(filepath)
+        self.max_length = max_length
         self.filepath = filepath
         self.encoder = HistoryCommandEncoder()
 
@@ -27,6 +28,7 @@ class HistoryFile(object):
 
     def write_command(self, command):
         """Write the command using the necessary Formatter."""
+        self._maybe_truncate()
         encoded = self.encoder.encode(command)
         self.writeline(encoded)
 
@@ -55,6 +57,15 @@ class HistoryFile(object):
         except Exception as e:
             raise ThymeHistoryFileException(e)
 
+    def _maybe_truncate(self):
+        lines = self.readlines()
+        if len(lines) < self.max_length:
+            return
+
+        with self._open_file(mode='w'):
+            for line in lines[1:]:
+                self.writeline(line)
+
 
 class HistoryCommandEncoder(object):
     """Modular encoder for encoding and decoding commands."""
@@ -73,8 +84,9 @@ class HistoryCommandEncoder(object):
 
 class History(object):
     def __init__(self):
-        filepath = self._get_thyme_filepath()
-        self.file = HistoryFile(filepath)
+        filepath = config.get_history_filepath()
+        max_lines = config.get_max_history_size()
+        self.file = HistoryFile(filepath, max_lines)
 
     def execute(self, mode, *args, **kwargs):
         """Method used to record a command.
@@ -82,8 +94,9 @@ class History(object):
         We take a mode <thyme.modes.Mode> and run it's `execute` method
         after writing the command to the history file.
         """
+        rv = mode.execute(*args, **kwargs)
         self.file.write_command(mode)
-        return mode.execute(*args, **kwargs)
+        return rv
 
     def list(self):
         """List every command in the history file."""
@@ -95,7 +108,3 @@ class History(object):
         history = self.file.readlines()
         filtered = [command for command in history if filter_ in command]
         return "".join(filtered)
-
-    def _get_thyme_filepath(self):
-        home = os.path.expanduser('~')
-        return '{0}/.thyme_history'.format(home)

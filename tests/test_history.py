@@ -18,7 +18,7 @@ def remove_temp(request):
 
 
 def test_history_file(remove_temp):
-    file = HistoryFile(TEMP_PATH)
+    file = HistoryFile(TEMP_PATH, 200)
     assert file.filepath == TEMP_PATH
 
     assert 'temp' in os.listdir('/tmp')
@@ -27,7 +27,7 @@ def test_history_file(remove_temp):
 
 
 def test_readlines(remove_temp):
-    file = HistoryFile(TEMP_PATH)
+    file = HistoryFile(TEMP_PATH, 200)
     with open('/tmp/temp', 'w') as f:
         f.write('boo who\n')
         f.write('bo ho\n')
@@ -36,7 +36,7 @@ def test_readlines(remove_temp):
 
 
 def test_read(remove_temp):
-    file = HistoryFile(TEMP_PATH)
+    file = HistoryFile(TEMP_PATH, 200)
     with open('/tmp/temp', 'w') as f:
         f.write('boo who\n')
         f.write('bo ho\n')
@@ -45,7 +45,7 @@ def test_read(remove_temp):
 
 
 def test_write_command(remove_temp):
-    file = HistoryFile(TEMP_PATH)
+    file = HistoryFile(TEMP_PATH, 200)
     file.writeline = mock.MagicMock()
     command = mock.MagicMock()
     command.to_string = mock.MagicMock(return_value='dude')
@@ -70,7 +70,7 @@ def test_historycommandencoder_decode():
     assert decoded == 'go charlie'
 
 
-@mock.patch('thyme.history.History._get_thyme_filepath', return_value=TEMP_PATH)
+@mock.patch('thyme.config.get_history_filepath', return_value=TEMP_PATH)
 def test_history_list(mock_path, remove_temp):
     with open(TEMP_PATH, 'w') as f:
         f.write('hello\nworkd\n')
@@ -79,10 +79,25 @@ def test_history_list(mock_path, remove_temp):
     assert history.list() == 'hello\nworkd\n'
 
 
-@mock.patch('thyme.history.History._get_thyme_filepath', return_value=TEMP_PATH)
+@mock.patch('thyme.config.get_history_filepath', return_value=TEMP_PATH)
 def test_history_search(mock_path, remove_temp):
     with open(TEMP_PATH, 'w') as f:
         f.write('hello\nworkd\n')
 
     history = History()
     assert history.search('llo') == 'hello'
+
+
+def test_truncate_history_file(remove_temp):
+    hf = HistoryFile(TEMP_PATH, 3)
+
+    obj = mock.MagicMock()
+    obj.to_string = mock.MagicMock(return_value='my little pony')
+
+    for l in range(5):
+        hf.write_command(obj)
+
+    with open(TEMP_PATH) as f:
+        file_len = len(f.readlines())
+
+    assert file_len == 3
