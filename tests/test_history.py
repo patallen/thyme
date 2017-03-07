@@ -1,4 +1,6 @@
 import os
+import pytest
+
 
 try:
     from unittest import mock
@@ -10,41 +12,39 @@ from thyme.history import History, HistoryFile, HistoryCommandEncoder
 TEMP_PATH = '/tmp/temp'
 
 
-def remove_temp():
-    os.remove(TEMP_PATH)
+@pytest.fixture()
+def remove_temp(request):
+    request.addfinalizer(lambda: os.remove(TEMP_PATH))
 
 
-def test_history_file():
+def test_history_file(remove_temp):
     file = HistoryFile(TEMP_PATH)
     assert file.filepath == TEMP_PATH
 
     assert 'temp' in os.listdir('/tmp')
 
     assert file.encoder is not None
-    remove_temp()
 
 
-def test_readlines():
+def test_readlines(remove_temp):
     file = HistoryFile(TEMP_PATH)
     with open('/tmp/temp', 'w') as f:
         f.write('boo who\n')
         f.write('bo ho\n')
 
     assert file.readlines() == ['boo who', 'bo ho']
-    remove_temp()
 
 
-def test_read():
+def test_read(remove_temp):
     file = HistoryFile(TEMP_PATH)
     with open('/tmp/temp', 'w') as f:
         f.write('boo who\n')
         f.write('bo ho\n')
 
     assert file.read() == 'boo who\nbo ho\n'
-    remove_temp()
 
 
-def test_write_command():
+def test_write_command(remove_temp):
     file = HistoryFile(TEMP_PATH)
     file.writeline = mock.MagicMock()
     command = mock.MagicMock()
@@ -52,7 +52,6 @@ def test_write_command():
 
     file.write_command(command)
     assert file.writeline.called
-    remove_temp()
 
 
 @mock.patch('time.time', return_value=100)
@@ -72,17 +71,16 @@ def test_historycommandencoder_decode():
 
 
 @mock.patch('thyme.history.History._get_thyme_filepath', return_value=TEMP_PATH)
-def test_history_list(mock_path):
+def test_history_list(mock_path, remove_temp):
     with open(TEMP_PATH, 'w') as f:
         f.write('hello\nworkd\n')
 
     history = History()
     assert history.list() == 'hello\nworkd\n'
-    remove_temp()
 
 
 @mock.patch('thyme.history.History._get_thyme_filepath', return_value=TEMP_PATH)
-def test_history_search(mock_path):
+def test_history_search(mock_path, remove_temp):
     with open(TEMP_PATH, 'w') as f:
         f.write('hello\nworkd\n')
 

@@ -16,13 +16,7 @@ class ThymeHistoryFileException(ThymeException):
 
 class HistoryFile(object):
     def __init__(self, filepath):
-        try:
-            with open(filepath, 'r'):
-                pass
-        except IOError:
-            with open(filepath, 'w'):
-                pass
-
+        self._ensure_file(filepath)
         self.filepath = filepath
         self.encoder = HistoryCommandEncoder()
 
@@ -51,14 +45,27 @@ class HistoryFile(object):
     def _open_file(self, mode='r'):
         return open(self.filepath, mode)
 
+    def _ensure_file(self, filepath):
+        try:
+            with open(filepath, 'r'):
+                pass
+        except IOError:
+            with open(filepath, 'w'):
+                pass
+        except Exception as e:
+            raise ThymeHistoryFileException(e)
+
 
 class HistoryCommandEncoder(object):
+    """Modular encoder for encoding and decoding commands."""
 
     def decode(self, line):
+        """Convert command string into storable format."""
         command = line.split(':0;')[-1]
         return command
 
     def encode(self, command):
+        """Convert store-formatted command into simple."""
         command = command.to_string()
         stamp = int(time.time())
         return ': {stamp}:0;{command}'.format(stamp=stamp, command=command)
