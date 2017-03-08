@@ -16,6 +16,7 @@ class Mode(object):
 
     def __init__(self, kwargs):
         self._kwargs = kwargs
+        self.command = kwargs.command
 
     def execute(self):
         raise NotImplementedError  # pragma: no cover
@@ -34,7 +35,8 @@ class ConvertMode(Mode):
     def execute(self):
         try:
             result = self._execute()
-        except Exception:
+        except Exception as e:
+            print("HERE", e)
             return InvalidResult('Unable to convert.')
 
         return ValidResult(result=result)
@@ -45,14 +47,8 @@ class ConvertMode(Mode):
         all_rates = get_all_rates(in_bytes)
         return format_rates(all_rates)
 
-    def _parse_input(self, value):
-        for index, char in enumerate(value):
-            if char not in '1234567890':
-                return int(value[:index]), value[index:]
-        raise ValueError("Unable to parse conversion input.")
-
     def to_string(self):
-        return '{} {}'.format(self._kwargs.command, self._kwargs.toconvert)
+        return '{} {}'.format(self.command, self._kwargs.toconvert).lower()
 
 
 class DatetimeMode(Mode):
@@ -92,7 +88,7 @@ class DatetimeMode(Mode):
             raise ValueError('Timestamp must convertable to a float.')
 
     def to_string(self):
-        return '{} {}'.format(self._kwargs.command, self._kwargs.timestamp)
+        return '{} {}'.format(self.command, self._kwargs.timestamp)
 
 
 class TimestampMode(Mode):
@@ -120,14 +116,13 @@ class TimestampMode(Mode):
 
     def to_string(self):
         date = self._kwargs.date
-        command = self._kwargs.command
         try:
             int(date)
         except ValueError:
             if ' ' in date:
                 date = "'{}'".format(date)
 
-        return '{0} {1}'.format(command, date)
+        return '{0} {1}'.format(self.command, date)
 
 
 class RandomMode(Mode):
@@ -162,7 +157,7 @@ class RandomMode(Mode):
         return ValidResult(result=rand)
 
     def to_string(self):
-        command = self._kwargs.command
+        command = self.command
         type_ = self._kwargs.type
 
         try:
@@ -198,9 +193,7 @@ class HistoryMode(Mode):
 
     def to_string(self):
         search = self._kwargs.search
-        command = self._kwargs.command
-
         if search:
-            return "{0} '{1}'".format(self._kwargs.command, search)
+            return "{0} '{1}'".format(self.command, search)
 
-        return command
+        return self.command
