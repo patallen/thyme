@@ -3,75 +3,53 @@ from datetime import datetime
 
 from thyme import utils
 
-good_dates = [
-    'February 25 1990',
-    '02/25/1990',
-    '02-25-1990',
-    'Feb 25 1990',
-    'Feb 25, 1990',
-    '2/25/90',
-    '2-25-90',
-]
 
-bad_dates = [
-    'zz3234z',
-    '02251990',
+GOOD_STRINGS = [
+    'February 25 1990', '02/25/1990', '02-25-1990',
+    'Feb 25 1990', 'Feb 25, 1990', '2/25/90', '2-25-90',
 ]
 
 
-def test_string_to_datetime():
-    final = datetime(1990, 2, 25)
-
-    for good_date in good_dates:
-        assert utils.string_to_datetime(good_date) == final
+@pytest.mark.parametrize('string', GOOD_STRINGS)
+def test_string_to_datetime(string):
+    assert utils.string_to_datetime(string) == datetime(1990, 2, 25)
 
 
-def test_bad_date_string():
-    for bad_date in bad_dates:
-        with pytest.raises(ValueError):
-            utils.string_to_datetime(bad_date)
+@pytest.mark.parametrize('dt', ['zz3234z', '02251990'])
+def test_bad_date_string(dt):
+    with pytest.raises(ValueError):
+        utils.string_to_datetime(dt)
 
 
 def test_good_make_timestamp():
     date = datetime(1990, 2, 25)
-    ts = 635904000
-
-    assert utils.make_timestamp(date) == ts
+    assert utils.make_timestamp(date) == 635904000
 
 
-def test_bad_make_timestamp():
-    date = 'not a datetime'
-
+@pytest.mark.parametrize('dt', (100, 'xyz', 9.9, 'Feb, 25'))
+def test_invalid_datetime_make_timestamp(dt):
     with pytest.raises(TypeError):
-        utils.make_timestamp(date)
+        utils.make_timestamp(dt)
 
 
-def test_datetime_to_string():
+@pytest.mark.parametrize('fmt', ('MMM DD, YYYY', 'mmm dd, yyyy'))
+def test_datetime_to_string(fmt):
     dt = datetime(1990, 2, 25)
-    string = utils.datetime_to_string(dt, 'MMM DD, YYYY')
-    assert string == 'Feb 25, 1990'
-
-    string = utils.datetime_to_string(dt, 'mmm dd, yyyy')
-    assert string == 'Feb 25, 1990'
+    assert utils.datetime_to_string(dt, fmt) == 'Feb 25, 1990'
 
 
-def test_assert_all_equal():
-    good = ['a', 'a', 'a']
-    assert utils.assert_all_equal(good)
-
-    bad = ['a', 'b', 'c']
-    assert not utils.assert_all_equal(bad)
-
-    one = ['a']
-    assert utils.assert_all_equal(one)
+@pytest.mark.parametrize('alist, ex', [
+    ((1, 2, 3), False), ((1, 1, 1), True), ((1,), True)
+])
+def test_assert_all_equal(alist, ex):
+    assert utils.assert_all_equal(alist) == ex
 
 
-def test_validate_format():
-    good = 'YYYY MMM DD'
-    bad = 'YZYY MMM D'
-
-    assert utils._validate_format(good)
-    assert not utils._validate_format(bad)
+@pytest.mark.parametrize('fmt, expected', [
+    ('YYY MMM DD', True), ('YZYY MMM D', False)
+])
+def test_validate_format(fmt, expected):
+    assert utils._validate_format(fmt) == expected
 
 
 def test_gen_random_thing_uuid():
@@ -102,28 +80,24 @@ def test_random_secret():
     assert isinstance(sec, str)
 
 
-def test_denomed_size():
-    kb_denom = utils.DenomedSize.from_string('10kb')
-    mb_denom = utils.DenomedSize.from_string('10mb')
-    gb_denom = utils.DenomedSize.from_string('10gb')
-    tb_denom = utils.DenomedSize.from_string('10tb')
-    pb_denom = utils.DenomedSize.from_string('10pb')
-
-    assert kb_denom.to_bytes() == 10240
-    assert mb_denom.to_bytes() == 10485760
-    assert gb_denom.to_bytes() == 10737418240
-    assert tb_denom.to_bytes() == 10995116277760
-    assert pb_denom.to_bytes() == 11258999068426240
+@pytest.mark.parametrize('string, expected', [
+    ('10kb', 10240), ('10mb', 10485760), ('10gb', 10737418240),
+    ('10tb', 10995116277760), ('10pb', 11258999068426240)
+])
+def test_denomed_size(string, expected):
+    res = utils.DenomedSize.from_string(string).to_bytes()
+    assert res == expected
 
 
-def test_denomed_size_non_lowercase():
-    kb_denom = utils.DenomedSize.from_string('10KB')
-    assert kb_denom.to_bytes() == 10240
+@pytest.mark.parametrize('string', ['10kB', '10KB', '10Kb'])
+def test_denomed_size_non_lowercase(string):
+    assert utils.DenomedSize.from_string(string).to_bytes() == 10240
 
 
-def test_invalid_denomed_size_string():
+@pytest.mark.parametrize('string', ('10bad', '10x', 'zz', 'z10'))
+def test_invalid_denomed_size_string(string):
     with pytest.raises(ValueError):
-        utils.DenomedSize.from_string('10badbad')
+        utils.DenomedSize.from_string(string)
 
 
 def test_get_all_rates():
@@ -139,12 +113,17 @@ def test_get_all_rates():
     assert rates == expected
 
 
-def test__parse_size_string():
-    expected = (10, 'kb')
-    assert expected == utils._parse_size_string('10kb')
+@pytest.mark.parametrize('string, expected', (
+    ('10kb', (10, 'kb')), ('10mb', (10, 'mb')),
+))
+def test__parse_size_string(string, expected):
+    assert expected == utils._parse_size_string(string)
 
+
+@pytest.mark.parametrize('string', ('zbc', 'xx10', 100))
+def test__parse_size_string_invalid(string):
     with pytest.raises(ValueError):
-        utils._parse_size_string('12345')
+        utils._parse_size_string(string)
 
 
 def test_format_rates():
