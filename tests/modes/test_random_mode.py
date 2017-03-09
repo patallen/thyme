@@ -1,3 +1,5 @@
+import pytest
+
 from thyme.modes import RandomMode
 from thyme.results import ValidResult, InvalidResult
 
@@ -72,3 +74,15 @@ def test_random_mode_invalid_limit():
     res = rm.execute()
     assert isinstance(res, InvalidResult)
     assert res.errors[0] == 'Limit must be an integer.'
+
+
+@pytest.mark.parametrize('argv, expected', [
+    ('random float -l10', 'random float -l10'),
+    ('random float', 'random float -l100'),
+    ('random uuid', 'random uuid')
+])
+def test_random_mode_str_representation(argv, expected):
+    args = argv.split()
+    parsed = parser.parse_args(args)
+    rm = RandomMode(parsed)
+    assert str(rm) == expected

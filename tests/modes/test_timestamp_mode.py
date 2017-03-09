@@ -1,3 +1,6 @@
+import pytest
+
+
 from thyme.modes import TimestampMode
 from thyme.results import ValidResult, InvalidResult
 
@@ -25,3 +28,13 @@ def test_timestamp_mode_bad_kwargs():
     timestamp_mode = TimestampMode(args)
 
     assert isinstance(timestamp_mode.execute(), InvalidResult)
+
+
+@pytest.mark.parametrize('args, expected', [
+    (('stamp', '02/25/1990'), 'stamp 02/25/1990'),
+    (('stamp', 'Feb 25, 1990'), "stamp 'Feb 25, 1990'")
+])
+def test_timestamp_str_representation(args, expected):
+    parsed = parser.parse_args(args)
+    timestamp_mode = TimestampMode(parsed)
+    assert str(timestamp_mode) == expected
