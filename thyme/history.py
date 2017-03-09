@@ -75,9 +75,8 @@ class HistoryCommandEncoder(object):
 
     def encode(self, command):
         """Convert store-formatted command into simple."""
-        command = command.to_string()
         stamp = int(time.time())
-        return ': {stamp}:0;{command}'.format(stamp=stamp, command=command)
+        return ': {0}:0;{1}'.format(stamp, command)
 
 
 class History(object):

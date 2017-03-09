@@ -1,6 +1,9 @@
+import pytest
+
 from thyme.modes import HistoryMode
 from thyme.history import History
-from thyme.results import ValidResult, InvalidResult
+
+
 try:
     from unittest import mock
 except ImportError:
@@ -9,7 +12,7 @@ except ImportError:
 from thyme.cli import parser
 
 
-def test_random_mode_init():
+def test_history_mode_init():
     argv = 'history'
     args = parser.parse_args(argv.split())
     hm = HistoryMode(args)
@@ -19,17 +22,13 @@ def test_random_mode_init():
     assert isinstance(hm.history, History)
 
 
-def test_to_string():
-    argv = ['history']
-    args = parser.parse_args(argv)
-    hm = HistoryMode(args)
-    assert hm.to_string() == 'history'
-
-    argv = ['history', 'blue man group']
-    args = parser.parse_args(argv)
-    hm = HistoryMode(args)
-
-    assert hm.to_string() == "history 'blue man group'"
+@pytest.mark.parametrize('argv, stringed', [
+    (('history',), 'history'),
+    (('history', 'blue man group'), "history 'blue man group'")
+])
+def test_str_represenation(argv, stringed):
+    hm = HistoryMode(parser.parse_args(argv))
+    assert str(hm) == stringed
 
 
 @mock.patch('thyme.history.History.list', return_value='boo\nbah\n')

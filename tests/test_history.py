@@ -66,7 +66,7 @@ def test_write_command(remove_temp):
 def test_historycommandencoder_encode(mock_time):
     hce = HistoryCommandEncoder()
     command = mock.MagicMock()
-    command.to_string = mock.MagicMock(return_value='go charlie')
+    command.__str__ = mock.MagicMock(return_value='go charlie')
     encoded = hce.encode(command)
     assert encoded == ': 100:0;go charlie'
 
@@ -100,7 +100,6 @@ def test_truncate_history_file(remove_temp):
     hf = HistoryFile(TEMP_PATH, 3)
 
     obj = mock.MagicMock()
-    obj.to_string = mock.MagicMock(return_value='my little pony')
 
     for l in range(5):
         hf.write_command(obj)

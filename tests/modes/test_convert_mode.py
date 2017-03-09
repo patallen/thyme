@@ -27,7 +27,7 @@ def test_bad_execute(argv):
 
 
 @pytest.mark.parametrize('string', ['10KB', '10kb', '10kB'])
-def test_to_string(string):
+def test_str_representation(string):
     args = parser.parse_args(['convert', string])
     cm = ConvertMode(args)
-    assert cm.to_string() == 'convert 10kb'
+    assert str(cm) == 'convert 10kb'

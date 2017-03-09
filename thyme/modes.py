@@ -21,7 +21,7 @@ class Mode(object):
     def execute(self):
         raise NotImplementedError  # pragma: no cover
 
-    def to_string(self):
+    def __str__(self):
         raise NotImplementedError  # pragma: no cover
 
 
@@ -47,7 +47,7 @@ class ConvertMode(Mode):
         all_rates = get_all_rates(in_bytes)
         return format_rates(all_rates)
 
-    def to_string(self):
+    def __str__(self):
         return '{} {}'.format(self.command, self._kwargs.toconvert).lower()
 
 
@@ -87,7 +87,7 @@ class DatetimeMode(Mode):
         except ValueError:
             raise ValueError('Timestamp must convertable to a float.')
 
-    def to_string(self):
+    def __str__(self):
         return '{} {}'.format(self.command, self._kwargs.timestamp)
 
 
@@ -114,7 +114,7 @@ class TimestampMode(Mode):
 
         return ValidResult(result=timestamp)
 
-    def to_string(self):
+    def __str__(self):
         date = self._kwargs.date
         try:
             int(date)
@@ -156,7 +156,7 @@ class RandomMode(Mode):
 
         return ValidResult(result=rand)
 
-    def to_string(self):
+    def __str__(self):
         command = self.command
         type_ = self._kwargs.type
 
@@ -191,7 +191,7 @@ class HistoryMode(Mode):
 
         return ValidResult(result=res)
 
-    def to_string(self):
+    def __str__(self):
         search = self._kwargs.search
         if search:
             return "{0} '{1}'".format(self.command, search)
