@@ -3,11 +3,7 @@ import pytest
 from thyme.modes import HistoryMode
 from thyme.history import History
 
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+import mock
 
 from thyme.cli import parser
 

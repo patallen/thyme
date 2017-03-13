@@ -9,6 +9,14 @@ from .utils import (
 )
 from .history import History
 from .results import ValidResult, InvalidResult
+import os
+
+from . import THYME_DIRECTORY
+
+
+TEMPLATES = {
+    "sublime": 'tpl.sublime-project'
+}
 
 
 class Mode(object):
@@ -36,7 +44,6 @@ class ConvertMode(Mode):
         try:
             result = self._execute()
         except Exception as e:
-            print("HERE", e)
             return InvalidResult('Unable to convert.')
 
         return ValidResult(result=result)
@@ -49,6 +56,12 @@ class ConvertMode(Mode):
 
     def __str__(self):
         return '{} {}'.format(self.command, self._kwargs.toconvert).lower()
+
+
+def get_template_from_kwargs(kwargs):
+    tpl_dir = os.path.join(THYME_DIRECTORY, 'templates')
+    filename = TEMPLATES[kwargs.filetype]
+    return os.path.join(tpl_dir, filename)
 
 
 class DatetimeMode(Mode):

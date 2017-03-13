@@ -1,3 +1,6 @@
+import os
+
+
 from .modes import DatetimeMode, TimestampMode, RandomMode, ConvertMode, HistoryMode
 from .history import History
 
