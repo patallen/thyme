@@ -10,12 +10,12 @@ from .utils import (
 from .history import History
 from .results import ValidResult, InvalidResult
 import os
-
+import sys
 from . import THYME_DIRECTORY
 
 
 TEMPLATES = {
-    "sublime": 'tpl.sublime-project'
+    "subl": 'tpl.sublime-project'
 }
 
 
@@ -31,6 +31,30 @@ class Mode(object):
 
     def __str__(self):
         raise NotImplementedError  # pragma: no cover
+
+
+class FileMode(Mode):
+    def execute(self):
+        try:
+            result = self._execute()
+        except Exception as e:
+            print(e)
+            return InvalidResult('Unable to create requested file.')
+
+        return ValidResult(result=result)
+
+    def _execute(self):
+        path = sys.argv[0]
+        path, filename = self._get_path_filename()
+        return os.path.join(path, filename)
+
+    def _get_path_filename(self):
+        path = os.path.dirname(os.getcwd())
+        name = self._kwargs.name or path.split(os.sep)[-1]
+        tpl_name = get_template_from_kwargs(self._kwargs)
+        extension = tpl_name.split('.')[-1]
+        filename = "{}.{}".format(name, extension)
+        return (path, filename)
 
 
 class ConvertMode(Mode):
@@ -59,6 +83,7 @@ class ConvertMode(Mode):
 
 
 def get_template_from_kwargs(kwargs):
+    print("kwargs", kwargs)
     tpl_dir = os.path.join(THYME_DIRECTORY, 'templates')
     filename = TEMPLATES[kwargs.filetype]
     return os.path.join(tpl_dir, filename)

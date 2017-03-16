@@ -18,6 +18,18 @@ random = subparsers.add_parser(
     help='Generate a random integer, float, UUID or secret key.'
 )
 
+file = subparsers.add_parser(
+    'file',
+    help='Create a file based off of a basic template.'
+)
+file_subparsers = file.add_subparsers(dest="filetype")
+file_subl = file_subparsers.add_parser(
+    'subl', help="Generate a sublime-project file.")
+file_subl.add_argument(
+    '--name', '-n', dest='name',
+    help='Choose a name. (defaults to cwd)')
+
+# file.add_argument()
 date = subparsers.add_parser(
     'date',
     help='Convert a Unix timestamp to a UTC datetime.'
