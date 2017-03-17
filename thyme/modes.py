@@ -7,6 +7,7 @@ from .utils import (
     format_rates,
     get_all_rates
 )
+import shutil
 from .history import History
 from .results import ValidResult, InvalidResult
 import os
@@ -44,17 +45,28 @@ class FileMode(Mode):
         return ValidResult(result=result)
 
     def _execute(self):
-        path = sys.argv[0]
-        path, filename = self._get_path_filename()
-        return os.path.join(path, filename)
+        tpl_path, new_path = self._get_paths()
+        self._write_file(tpl_path, new_path)
+        return "File created at: {}.".format(new_path)
 
-    def _get_path_filename(self):
-        path = os.path.dirname(os.getcwd())
-        name = self._kwargs.name or path.split(os.sep)[-1]
+    def _get_paths(self):
+        cwd = os.getcwd()
+        name = self._kwargs.name or cwd.split(os.sep)[-1]
         tpl_name = get_template_from_kwargs(self._kwargs)
         extension = tpl_name.split('.')[-1]
         filename = "{}.{}".format(name, extension)
-        return (path, filename)
+        new_path = os.path.join(cwd, filename)
+        tpl_path = os.path.join(THYME_DIRECTORY, 'templates', tpl_name)
+        return tpl_path, new_path
+
+    def _write_file(self, template_path, output_path):
+        shutil.copy(template_path, output_path)
+
+    def __str__(self):
+        command = "file subl"
+        if self._kwargs.name:
+            command += " {}".format(self._kwargs.name)
+        return command
 
 
 class ConvertMode(Mode):
@@ -83,7 +95,6 @@ class ConvertMode(Mode):
 
 
 def get_template_from_kwargs(kwargs):
-    print("kwargs", kwargs)
     tpl_dir = os.path.join(THYME_DIRECTORY, 'templates')
     filename = TEMPLATES[kwargs.filetype]
     return os.path.join(tpl_dir, filename)

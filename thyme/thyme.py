@@ -1,7 +1,14 @@
 import os
 
 
-from .modes import DatetimeMode, TimestampMode, RandomMode, ConvertMode, HistoryMode
+from .modes import (
+    DatetimeMode,
+    TimestampMode,
+    RandomMode,
+    ConvertMode,
+    HistoryMode,
+    FileMode
+)
 from .history import History
 
 
@@ -9,11 +16,12 @@ class Thyme(object):
     """Main runner object. Use <instance>.run() to execute command."""
 
     _modes = {
+        'file': FileMode,
         'date': DatetimeMode,
         'stamp': TimestampMode,
         'random': RandomMode,
         'convert': ConvertMode,
-        'history': HistoryMode
+        'history': HistoryMode,
     }
 
     def __init__(self, kwargs):
