@@ -48,17 +48,11 @@ def test_file_mode_init(args, expected):
     (('file subl -nthyme', 'thyme.sublime-project'),
      ('file subl', 'c.sublime-project'))
 )
-@mock.patch('os.getcwd', return_value='/a/b/c/')
-def test_execute_returns_path(mock_cwd, args, fname):
+@mock.patch('os.getcwd', return_value='/a/b/c')
+@mock.patch('shutil.copy', return_value=None)
+def test_execute_returns_path(m, mock_cwd, args, fname):
     args = args.split(' ')
     args = parser.parse_args(args)
     fm = FileMode(args)
     res = fm.execute()
-    assert res.result == os.path.join('/a/b/c/', fname)
-
-
-def test_get_path_filename():
-    args = parser.parse_args(['file', 'subl', '-nthyme'])
-    fm = FileMode(args)
-    path, filename = fm._get_path_filename()
-    assert filename == 'thyme.sublime-project'
+    assert os.path.join('/a/b/c', fname) in res.result

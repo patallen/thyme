@@ -38,8 +38,7 @@ class FileMode(Mode):
     def execute(self):
         try:
             result = self._execute()
-        except Exception as e:
-            print(e)
+        except Exception:
             return InvalidResult('Unable to create requested file.')
 
         return ValidResult(result=result)
@@ -63,7 +62,7 @@ class FileMode(Mode):
         shutil.copy(template_path, output_path)
 
     def __str__(self):
-        command = "file subl"
+        command = "file {}".format(self._kwargs.filetype)
         if self._kwargs.name:
             command += " {}".format(self._kwargs.name)
         return command
