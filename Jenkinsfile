@@ -32,9 +32,11 @@ pipeline {
             sh("pip install -r requirements.txt")
           }
         }
-        post {
-          always {
-            sh('echo "$(tput setaf 2)All Done!$(tput sgr0)"')
+        stage {
+          post {
+            always {
+              sh('echo "$(tput setaf 2)All Done!$(tput sgr0)"')
+            }
           }
         }
       }
