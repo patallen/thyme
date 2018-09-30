@@ -6,8 +6,10 @@ pipeline {
       parallel {
         stage("Testing Python 2.7") {
           agent {
+            docker {
               label 'Docker Python2.7',
               image 'python:2.7.15'
+            }
           }
           steps {
               sh("virtualenv /tmp/${env.GIT_REV}27 --python python2")
@@ -17,8 +19,10 @@ pipeline {
         }
         stage("Testing Python 3.5") {
           agent {
-            label 'Docker Python2.7',
-            image 'python:2.7.15'
+            docker {
+              label 'Docker Python3.7',
+              image 'python:3.7'
+            }
           }
           steps {
             sh("virtualenv /tmp/${env.GIT_REV}35 --python python3.5")
