@@ -1,9 +1,4 @@
 #! groovy
-
-def shortcode(env) {
-  return env.GIT_REV.substring(0, 8);
-}
-
 pipeline {
   agent any
   stages {
@@ -24,7 +19,6 @@ pipeline {
             label "linux"
           }
           steps {
-            def code = shortcode(env);
             sh("virtualenv /tmp/${env.GIT_REV}35 --python python3.5")
             sh("source /tmp/${env.GIT_REV}35/bin/activate")
             sh("pip install -r requirements.txt")
