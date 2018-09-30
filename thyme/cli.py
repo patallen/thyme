@@ -1,3 +1,5 @@
+"""CLI Interface for Thyme"""
+
 import argparse
 from .thyme import Thyme
 
