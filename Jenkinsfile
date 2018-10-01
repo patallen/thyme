@@ -1,31 +1,33 @@
 #! groovy
 pipeline {
   agent none
+  environment {
+    DOCKER_HOST = 'unix:///var/run/docker.sock'
+  }
   stages {
     stage("Python Testing") {
       parallel {
         stage("Testing Python 2.7") {
           agent {
-            docker {
-              image 'python:2.7'
-            }
+            label 'python-docker-slave'
           }
           steps {
-              sh("virtualenv /tmp/${env.GIT_REV}27 --python python2")
-              sh("source /tmp/${env.GIT_REV}27/bin/activate")
-              sh("pip install -r requirements.txt")
+            sh('echo "#################################"')
+            sh('echo "CWD: $(pwd)"')
+            sh('echo "User: ${USER}"')
+            sh('pip install --user -r requirements.txt')
           }
         }
-        stage("Testing Python 3.5") {
+
+        stage("Testing Python 3.7") {
           agent {
-            docker {
-              image 'python:3.7'
-            }
+            label 'python-docker-slave'
           }
           steps {
-            sh("virtualenv /tmp/${env.GIT_REV}35 --python python3.7")
-            sh("source /tmp/${env.GIT_REV}35/bin/activate")
-            sh("pip install -r requirements.txt")
+            sh('echo "#################################"')
+            sh('echo "CWD: $(pwd)"')
+            sh('echo "User: ${USER}"')
+            sh('pip install --user -r requirements.txt')
           }
         }
       }
